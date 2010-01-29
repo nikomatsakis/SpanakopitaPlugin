@@ -1,0 +1,124 @@
+txt2tags TODO file
+
+(see ChangeLog file for TODO's already done)
+
+----------------------------------------------------------------------
+
+                                 TODO
+                                 ====
+
+- --htmliso like &aacute; (Penasio)
+- improves -vvv messages inside convert
+- use <P> inside <BLOCKQUOTE> and don't close on ^\t$ (Bruce Who)
+- tex: image alignment (leslie)
+- bug: %!options: -o "file with spaces.html" (guaracy)
+- expand %%infile and %%outfile (maybe others) inside %!options (cacilhas)
+- man bug: dots on list item:  - ... are hidden
+- man, sgml, tex: table declaration must contain the MAXIMUM number of
+  columns, not the first line (leslie)
+- tex, sgml: make table alignable
+- sgml: make anchor schema work
+- list maxdepth reached, remove listid for the following sublists
+- mgp: see %encoding strings
+- -t txt --style fancy
+- a nice logo for the program
+- implement split, see nice postgres manual headers (jic, many others)
+  emacs lisp page has a nice oneliner:
+  Node:On Reading this Text, Next:Who You Are, Previous:Why, Up:Preface 
+- sgml: change \ to &bsol; on <sect> content is really needed?
+
+
+----------------------------------------------------------------------
+
+                          TODO DOCUMENTATION
+                          ==================
+
+- rules: __//**one inside other**//__
+- web: top5 t2t sites
+- userguide: FAQ: [bla ""explicit link""] works (!for sgml - escapes)
+- userguide: EOF of included file closes paragraph? (no)
+- userguide: close open list/table/etc where included file hit EOF? (no)
+
+----------------------------------------------------------------------
+
+                            THINK ABOUT IT
+                            ==============
+
+- new target: reST (osvaldo)
+- allow \$ for multiline on rc file?
+- --dump-tree or something to show document structure
+- footnotes[1] (Miek)
+- %!imagespath for isolate img mark and file location
+- make --no-rc work inside %!options
+- ''' for pass-thru blocks (leorosa)
+- %!passthru: TARGET, to guide ''' blocks (leorosa)
+- warning for images referenced but not found?
+- %%anchortitle(anchor) to expand to title name
+- escape "by hand" all consecutive spaces inside <code>?
+- detect SEPARATOR in output do avoid gotchas
+- mark for links, everything inside is a link, no matter what (Bruce Who)
+- -v options showing conversion elapsed time
+- mgp: --style white,gray,black
+- setting for newpage on each =title= (sandor)
+- txt2tags --update *.t2t / to just convert recently changed sources (Guaracy)
+- target txt: draw the table lines/cols
+- | %!include | inside tables | an other marks (dmitry)
+- Multi-line main title (Sandor) (see syntax, possible with postproc)
+- new PDF target (Sandor)
+- find_area must be (re)done after preproc is executed (%html% prob) (guaracy)
+- exec included file preproc when including? 
+- fix images path when including?
+- css-sugar: include a span for p.first-letter in sections (grossman)
+- images vertical align (Richard Gellert)
+- WARNINGS: unbalanced title, unclosed list
+- txt2tags -t html,txt bla.t2t  (oyvind)  (bloat?)
+- ALT text for images (Lucasz)
+- use html as the default xhtml file extension (maybe %!defaultext?) (peter)
+- after quote, remove leading TAB to match TABLES also (table inside quote)
+- allow lists inside quotes? (mgp TAB problems)
+- --seesource (HTML file generated with txt2tags (see source)
+- --noimages (ignore images - useful for text-only versions) - maybe default
+- \<ENTER> (not in PRE), join next line (just like sed N) (only @table?)
+- moin: table alignment (doable?)
+- tex: postFilter  "(.*?)" ``$1''
+- tex: --lang matters! \usepackage[brazil]{babel} (sergio)
+                  max: \usepackage[russian]{babel}
+		  (doable with --style babel plus postproc)
+- html: formatting beautify substitutions: (grossman)
+        "word"  ->  &ldquo;word&rdquo;
+        'word'  ->  &lsquo;word&rsquo;
+       <<word>> ->  &laquo;word&raquo;
+- if comamnd:
+    %!if HTML
+      My name is %%MYNAME.
+    %!
+- include schema:
+    %!include: **file**     # as bold
+    %!include: //file//     # as italic
+
+----------------------------------------------------------------------
+
+                               WON'T DO
+                               ========
+
+- commands to embed Python code inside the document source
+- commands to perform system()-like features
+- split the program code into little files (Philip) {KISS}
+
+- document word/page index (CRG) {KISS}
+- tables and images index (CRG) {KISS}
+- markup for CSS and DIV on HTML target {txt2tags == multitarget}
+- colorize source code samples inside verb (CRG) {KISS}
+- first line like %%txt2tags-v1.1%% to identify the t2t file? (Peter)
+- Restarting Section counters for Appendix etc. (Sandor) {KISS}
+- beautifiers inside verbatim block (Ola) {KISS}
+- [link "image with spaces.gif"] (leslie)
+- --emoticons, moin-like {plain bloat}
+- --header-template (leslie) {%!include can be used}
+- recognize \windows\path on %!include (guaracy) {portability}
+- [named local link.php?with=vars] (claude@fr) {solved with ""raw mark around link""}
+
+----------------------------------------------------------------------
+
+The End.
+
