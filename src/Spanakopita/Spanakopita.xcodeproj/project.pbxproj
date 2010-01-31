@@ -21,8 +21,6 @@
 		232171151114ACDF00EA899B /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2321710A1114ACD500EA899B /* QuickLook.framework */; };
 		2321713F1114B2BD00EA899B /* txt2tags25.py in Resources */ = {isa = PBXBuildFile; fileRef = 2321713E1114B2BD00EA899B /* txt2tags25.py */; };
 		232171401114B2BD00EA899B /* txt2tags25.py in Resources */ = {isa = PBXBuildFile; fileRef = 2321713E1114B2BD00EA899B /* txt2tags25.py */; };
-		237B6D161115646600B4BBE0 /* Spanakopita Insert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */; };
-		237B6D171115646600B4BBE0 /* Spanakopita Insert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */; };
 		238978191111FEC0008D504F /* SpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978161111FEC0008D504F /* SpPlugin.m */; };
 		2389781A1111FEC0008D504F /* SpInsertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978181111FEC0008D504F /* SpInsertController.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -46,7 +44,6 @@
 		2321701D111416AF00EA899B /* SpTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpTest.m; sourceTree = "<group>"; };
 		2321710A1114ACD500EA899B /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		2321713E1114B2BD00EA899B /* txt2tags25.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = txt2tags25.py; sourceTree = "<group>"; };
-		237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "Spanakopita Insert.xib"; sourceTree = "<group>"; };
 		238978151111FEC0008D504F /* SpPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpPlugin.h; sourceTree = "<group>"; };
 		238978161111FEC0008D504F /* SpPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpPlugin.m; sourceTree = "<group>"; };
 		238978171111FEC0008D504F /* SpInsertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpInsertController.h; sourceTree = "<group>"; };
@@ -108,7 +105,6 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */,
 				232170151114164F00EA899B /* Spanakopita Test.xib */,
 				23216FD8111415A400EA899B /* Spanakaopita Test-Info.plist */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
@@ -250,7 +246,6 @@
 			files = (
 				232170171114165500EA899B /* Spanakopita Test.xib in Resources */,
 				232171401114B2BD00EA899B /* txt2tags25.py in Resources */,
-				237B6D171115646600B4BBE0 /* Spanakopita Insert.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +255,6 @@
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
 				2321713F1114B2BD00EA899B /* txt2tags25.py in Resources */,
-				237B6D161115646600B4BBE0 /* Spanakopita Insert.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

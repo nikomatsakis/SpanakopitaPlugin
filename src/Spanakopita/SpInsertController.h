@@ -19,7 +19,7 @@
 @property(retain) OakProjectController *project;
 @property(retain) NSWindow *projectWindow;
 @property(copy) NSString *currentFilePath;
-@property(retain) IBOutlet WebView *webView;
+@property(retain) WebView *webView;
 
 - initWithProjectController:(OakProjectController*)aProject
 			  projectWindow:(NSWindow*)aWindow;

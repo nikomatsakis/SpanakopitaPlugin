@@ -7,11 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "SpWindowController.h"
+#import "SpInsertController.h"
 #import "TextMate.h"
 
 @interface SpPlugin : NSObject {
-	NSMutableArray *spWindowControllers;
+	NSMutableArray *spInsertControllers;
 	NSMenu* windowMenu;
 	NSMenuItem* showClockMenuItem;
 }

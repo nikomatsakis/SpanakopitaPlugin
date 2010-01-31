@@ -16,7 +16,7 @@ int SpPluginKey = 0;
 - (id)initWithPlugInController:(id <TMPlugInController>)aController
 {
 	if(self = [super init]) {
-		spWindowControllers = [[NSMutableArray alloc] init];
+		spInsertControllers = [[NSMutableArray alloc] init];
 		[self installMenuItem];
 		
 		[NSURLProtocol registerClass:[SpUrlProtocol class]];
@@ -28,7 +28,7 @@ int SpPluginKey = 0;
 {
 	[self uninstallMenuItem];
 	[self disposeWindows];
-	[spWindowControllers release];
+	[spInsertControllers release];
 	[super dealloc];
 }
 
@@ -69,34 +69,26 @@ int SpPluginKey = 0;
 	windowMenu = nil;
 }
 
-- (void)activateController:(SpWindowController*)spWindowController
-{
-	[spWindowController showWindow:self];
-}
-
 - (void)showSpanakopita:(id)sender
 {
 	NSWindow *currentProjectWindow = [self currentProjectWindow];
 	if(currentProjectWindow) {
 		OakProjectController *currentProject = [currentProjectWindow windowController];
-		for(SpWindowController *spWindowController in spWindowControllers)
-			if(spWindowController.project == currentProject) {
-				[self activateController:spWindowController];
+		for(SpInsertController *spInsertController in spInsertControllers)
+			if(spInsertController.project == currentProject) { // already inserted
 				return;
 			}
 		
-		SpWindowController *spWindowController = [[[SpWindowController alloc] initWithProjectController:currentProject 
+		SpInsertController *spInsertController = [[[SpInsertController alloc] initWithProjectController:currentProject 
 																						 projectWindow:currentProjectWindow] autorelease];
-		[spWindowControllers addObject:spWindowController];
-		[self activateController:spWindowController];
+		[spInsertControllers addObject:spInsertController];
 	}
 }
 
 - (void)disposeWindows
 {
-	for(SpWindowController *spWindowController in spWindowControllers) {
-		[spWindowController close];
-		[spWindowController release];
+	for(SpInsertController *spInsertController in spInsertControllers) {
+		[spInsertController release];
 	}
 }
 

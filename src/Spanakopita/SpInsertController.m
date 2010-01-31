@@ -6,25 +6,44 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "SpWindowController.h"
+#import "SpInsertController.h"
 #import "TextMate.h"
 
 int SpWindowControllerContext;
 
-@implementation SpWindowController
+@implementation SpInsertController
 
-@synthesize project, projectWindow, currentFilePath;
+@synthesize project, projectWindow, currentFilePath, webView;
 
 - initWithProjectController:(OakProjectController*)aProject
 			  projectWindow:(NSWindow*)aWindow
 {
-	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-	NSString *path = [bundle pathForResource:@"Spanakopita" ofType:@"nib"];
-	if((self = [super initWithWindowNibPath:path owner:self])) {
+	if((self = [super init])) {
 		self.project = aProject;
 		self.projectWindow = aWindow;
 		
-		// Have to insert 
+		// Have to wrap the text editing area (an NSScrollView) with a Split view:
+		NSView *contentView = [projectWindow contentView];
+		NSArray *subviews = [contentView subviews];
+		for(NSView *subview in subviews) {
+			if([subview isKindOfClass:[NSScrollView class]]) { // Found it
+				// Create splitView that will encompass scroll view:
+				NSSplitView *splitView = [[[NSSplitView alloc] initWithFrame:[subview frame]] autorelease];
+				[splitView setVertical:NO];
+				[splitView setAutoresizingMask:[subview autoresizingMask]];
+				
+				// Create webView:
+				self.webView = [[[WebView alloc] initWithFrame:[subview frame]] autorelease];
+				[webView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+				[webView setShouldCloseWithWindow:YES];
+				
+				// Substitute and connect the various views:
+				[subview retain];
+				[contentView replaceSubview:subview with:splitView];				
+				[splitView addSubview:subview];
+				[splitView addSubview:webView];				 
+			}
+		}
 		
 		[self reloadCurrentFilePath];
 		
@@ -38,6 +57,7 @@ int SpWindowControllerContext;
 	[projectWindow removeObserver:self forKeyPath:@"representedFilename"];
 	self.project = nil;
 	self.projectWindow = nil;
+	self.webView = nil;
 	[super dealloc];
 }
 
