@@ -7,6 +7,9 @@ This document demonstrates some of the features of
     }
 }
 or you can just highlight a variable like {int *p}.
+
+Images are with square brackets: [t2tpowered.png] and links are with [[double brackets @
+Test2.sp]].  Just linking to an sp file like [[Test2]] is particularly short.
     
 You should be able to create lists:
 - One Item

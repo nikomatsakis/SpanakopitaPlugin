@@ -3,7 +3,7 @@
 # Spanakopita markup tool.  The markup is loosely based on http://txt2tags.sf.net.
 # See markup.sp for an explanation.
 
-import sys, re
+import sys, re, urllib
 
 # ___ Ast Classes ______________________________________________________
 
@@ -35,6 +35,11 @@ class ParentAst(Ast):
         
     def append_child(self, a_node):
         self.children_a.append(a_node)
+
+    def rstrip_text(self):
+        if self.children_a and isinstance(self.children_a[-1], Text):
+            u_text = self.children_a[-1].u_text.rstrip()
+            self.children_a[-1].u_text = u_text
         
     def append_text(self, pos, u_text):
         if self.children_a and isinstance(self.children_a[-1], Text):
@@ -142,28 +147,28 @@ class VerbatimText(LeafAst):
         return "%s(text=%s)" % (self.tag, self.u_text)
     
 class Image(LeafAst):
-    def __init__(self, pos, url):
+    def __init__(self, pos):
         super(Image, self).__init__(pos)
-        self.url = url
+        self.url = None # must be set at some point
         
     def to_html(self, out):
-        out.write('<img src="%s">' % url)
+        out.write('<img src="%s">' % self.url)
                 
     def __str__(self):
-        return "%s(url=%s)".format(self.tag, self.url)
+        return "%s(url=%s)" % (self.tag, self.url)
         
 class Link(ParentAst):
-    def __init__(self, pos, url):
+    def __init__(self, pos):
         super(Link, self).__init__(pos)
-        self.url = url
+        self.url = None # must be set at some point
 
     def to_html(self, out):
-        out.write('<a href="%s">' % url)
+        out.write('<a href="%s">' % self.url)
         for c in self.children_a: c.to_html(out)
         out.write('</a>')
 
     def __str__(self):
-        return "%s(url=%s)".format(self.tag, self.url)
+        return "%s(url=%s)" % (self.tag, self.url)
 
 # ___ Lexer ____________________________________________________________
 #
@@ -189,6 +194,8 @@ WITHIN_REGULAR_EXPRESSIONS = {
     
     'L_CURLY': re.compile(r'{'),
     'R_CURLY': re.compile(r'}'),
+    
+    'AT': re.compile(r'@'),
     
     'L_SQUARE': re.compile(r'\['),
     'R_SQUARE': re.compile(r'\]'),
@@ -405,6 +412,10 @@ def elems(lexer, a_parent, stop_on_tags):
         if lexer.is_a('TABLE_START'):
             a_parent.append_child(table(lexer))
             continue
+            
+        if lexer.is_a('L_SQUARE'):
+            a_parent.append_child(link_or_image(lexer))
+            continue
         
         if lexer.is_a('INDENT'):
             a_parent.append_child(indented(lexer))
@@ -526,7 +537,7 @@ def table_row(lexer):
         # Consume a CELL:
         a_cell = TableCell(lexer.pos)
         lexer.next() 
-        elems(lexer, a_cell)
+        elems(lexer, a_cell, [])
         a_row.append_child(a_cell)
         
         # If we found a separator, consume another CELL:
@@ -542,6 +553,74 @@ def table(lexer):
         
     return a_table
     
+def skip_space(lexer):
+    while lexer.token.tag == 'SPACE':
+        lexer.next()
+
+scheme = re.compile(u"[a-z]+:")
+def path_to_url(u_path):
+    if scheme.match(u_path):
+        i = u_path.index(u":")+1
+    else:
+        i = 0
+    return u_path[:i].encode('ASCII') + urllib.quote(u_path[i:].encode('UTF-8'))
+
+ext = re.compile("\.[a-zA-Z0-9]+$")
+def default_url(a_link):
+    u_path = u""
+    for a_node in a_link.children_a:
+        if isinstance(a_node, Text): 
+            u_path += a_node.u_text
+        
+    if not ext.search(u_path):
+        u_path += u".sp"
+    
+    return path_to_url(u_path)
+    
+def url(lexer, a_node):
+    # Only accept text and whitespace until ']':
+    u_path = u""    
+    
+    skip_space(lexer)
+    
+    while True:
+        if lexer.token.tag in ['TEXT', 'SPACE']:
+            u_path += lexer.token.u_text
+            lexer.next()
+        elif lexer.is_a('R_SQUARE'):
+            a_node.url = path_to_url(u_path)
+            return
+        else:
+            raise ParseError(lexer, ['R_SQUARE'])
+    
+def link_or_image(lexer):
+    # Saw one '['
+    lexer.next()
+    
+    # Saw another: [[...]] or [[... @ link]]
+    if lexer.is_a('L_SQUARE'):
+        a_link = Link(lexer.pos)
+        lexer.next()
+        elems(lexer, a_link, ['AT'])
+        if lexer.is_a('AT'):
+            a_link.rstrip_text()
+            lexer.next()
+            url(lexer, a_link)
+        else:
+            a_link.url = default_url(a_link)
+        lexer.require(['R_SQUARE'])
+        lexer.next()
+        lexer.require(['R_SQUARE'])
+        lexer.next()
+        return a_link
+        
+    # Saw only one, must be an image:
+    a_img = Image(lexer.pos)
+    url(lexer, a_img)
+    lexer.require(['R_SQUARE'])
+    lexer.next()
+    return a_img
+    
 # ___ Main _____________________________________________________________
 
 def main(argv):
@@ -554,6 +633,7 @@ def main(argv):
             ast.to_html(sys.stdout)
     except ParseError, e:
         print e
+        raise
             
 if __name__ == "__main__": 
     main(sys.argv[1:])
