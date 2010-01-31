@@ -38,19 +38,19 @@ It should be possible to nest lists:
 Note that typing here is outside the list.
 
 Finally, we can make tables:
-|| a | b | c | d
-|| e | f | g | h
+|| a | b | c | d ||
+|| e | f | g | h ||
 and text that comes after a table works just fine.
 
 There is some flexibility with the formatting:
 ||  a
 |   b
 |   c
-|   d
+|   d ||
 ||  e
 |   f
 |   g
-|   h
+|   h ||
 and text that comes after a table works just fine.
 
 In fact, by indenting after a cell, there is quite a lot of flexibility:
@@ -62,9 +62,11 @@ In fact, by indenting after a cell, there is quite a lot of flexibility:
     c
 |   
     d
+||
 ||  
-    || this way permits | nested tables 
-    || as | well
+    || this way permits | nested tables ||
+    || as | well ||
 |   f
 |   g
 |   h
+||

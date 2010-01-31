@@ -194,6 +194,7 @@ WITHIN_REGULAR_EXPRESSIONS = [
     ('UNDER', re.compile(r'__')),
     ('STRIKE', re.compile(r'--')),
 
+    ('TABLE_ROW', re.compile(r'\|\|')),
     ('TABLE_CELL', re.compile(r'\|')),
 
     ('L_CURLY', re.compile(r'{')),
@@ -210,7 +211,6 @@ START_REGULAR_EXPRESSIONS = [
     ('HEADER', re.compile(r'___')),
     ('BULLET', re.compile(r'-')),
     ('HASH', re.compile(r'\#')),
-    ('TABLE_ROW', re.compile(r'\|\|')),
 ]
 
 class Token(object):
@@ -559,13 +559,15 @@ def table_row(lexer):
             lexer.next()
             elems_until_undent(lexer, a_cell)
         else:
-            elems(lexer, a_cell, ['BLANK_LINE', 'TABLE_ROW', 'TABLE_CELL'])
+            elems(lexer, a_cell, ['TABLE_ROW', 'TABLE_CELL'])
         
         # If we found a cell separator, consume another CELL:
         if lexer.token.tag == 'TABLE_CELL': 
             continue       
             
-        # Otherwise, the row is finished.     
+        # Otherwise, we expect another ROW indicator to end the row:
+        lexer.require('TABLE_ROW')
+        lexer.next()
         return a_row
         
 def table(lexer):
@@ -573,6 +575,7 @@ def table(lexer):
     
     while lexer.token.tag == 'TABLE_ROW':
         a_table.append_child(table_row(lexer))
+        skip_space(lexer)
         
     return a_table
     
