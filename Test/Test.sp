@@ -62,11 +62,16 @@ In fact, by indenting after a cell, there is quite a lot of flexibility:
     c
 |   
     d
-||
-||  
+|| ||  
     || this way permits | nested tables ||
     || as | well ||
 |   f
 |   g
 |   h
+||
+||
+    p 
+|   q
+|   r
+|   s 
 ||
