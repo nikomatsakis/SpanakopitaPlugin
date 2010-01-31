@@ -7,26 +7,40 @@
 //
 
 #import "SpPlugin.h"
+#import "SpUrlProtocol.h"
+#import <objc/runtime.h>
 
+int SpPluginKey = 0;
 
 @implementation SpPlugin
 - (id)initWithPlugInController:(id <TMPlugInController>)aController
 {
-	//	[NSWindowPoser poseAsClass:[NSWindow class]];
-	
-	NSLog(@"SpPlugin init");
-	
-	NSApp = [NSApplication sharedApplication];
-	if(self = [super init])
+	if(self = [super init]) {
+		spWindowControllers = [[NSMutableArray alloc] init];
 		[self installMenuItem];
+		
+		[NSURLProtocol registerClass:[SpUrlProtocol class]];
+	}
 	return self;
 }
 
 - (void)dealloc
 {
 	[self uninstallMenuItem];
-	[self disposeWindow];
+	[self disposeWindows];
+	[spWindowControllers release];
 	[super dealloc];
+}
+
+- (NSWindow*)currentProjectWindow
+{
+	for (NSWindow *w in [[NSApplication sharedApplication] orderedWindows]) {
+		if ([[[w windowController] className] isEqualToString: @"OakProjectController"] &&
+			[[w windowController] projectDirectory]) {
+			return w;
+		}
+	}	
+	return nil;	
 }
 
 - (void)installMenuItem
@@ -55,27 +69,35 @@
 	windowMenu = nil;
 }
 
-- (NSString*)currentFilePath
+- (void)activateController:(SpWindowController*)spWindowController
 {
-	id target = [NSApp targetForAction:@selector(allEnvironmentVariables)];
-	return [[target allEnvironmentVariables] objectForKey:@"TM_FILEPATH"];
+	[spWindowController showWindow:self];
 }
 
 - (void)showSpanakopita:(id)sender
 {
-	NSLog(@"Current file path: %@", [self currentFilePath]);
-	if(!spWindowController)
-	{
-		spWindowController = [[SpWindowController alloc] init];
+	NSWindow *currentProjectWindow = [self currentProjectWindow];
+	if(currentProjectWindow) {
+		OakProjectController *currentProject = [currentProjectWindow windowController];
+		for(SpWindowController *spWindowController in spWindowControllers)
+			if(spWindowController.project == currentProject) {
+				[self activateController:spWindowController];
+				return;
+			}
+		
+		SpWindowController *spWindowController = [[[SpWindowController alloc] initWithProjectController:currentProject 
+																						 projectWindow:currentProjectWindow] autorelease];
+		[spWindowControllers addObject:spWindowController];
+		[self activateController:spWindowController];
 	}
-	[spWindowController showWindow:self];
 }
 
-- (void)disposeWindow
+- (void)disposeWindows
 {
-	[spWindowController close];
-	[spWindowController release];
-	spWindowController = nil;
+	for(SpWindowController *spWindowController in spWindowControllers) {
+		[spWindowController close];
+		[spWindowController release];
+	}
 }
 
 @end

@@ -7,9 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		23216EF9111405A900EA899B /* SpUrlProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 23216EF8111405A900EA899B /* SpUrlProtocol.m */; };
+		23216F0E1114124700EA899B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23216F0D1114124700EA899B /* WebKit.framework */; };
+		23216FDE111415BC00EA899B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		23216FDF111415BC00EA899B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23216F0D1114124700EA899B /* WebKit.framework */; };
+		23216FE0111415C300EA899B /* SpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978161111FEC0008D504F /* SpPlugin.m */; };
+		23216FE1111415C300EA899B /* SpInsertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978181111FEC0008D504F /* SpInsertController.m */; };
+		23216FE2111415C300EA899B /* SpUrlProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 23216EF8111405A900EA899B /* SpUrlProtocol.m */; };
+		23216FFA1114162F00EA899B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 23216FE5111415F300EA899B /* main.m */; };
+		232170171114165500EA899B /* Spanakopita Test.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232170151114164F00EA899B /* Spanakopita Test.xib */; };
+		23217047111419DA00EA899B /* SpTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2321701D111416AF00EA899B /* SpTest.m */; };
+		2321710B1114ACD500EA899B /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2321710A1114ACD500EA899B /* QuickLook.framework */; };
+		232171151114ACDF00EA899B /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2321710A1114ACD500EA899B /* QuickLook.framework */; };
+		2321713F1114B2BD00EA899B /* txt2tags25.py in Resources */ = {isa = PBXBuildFile; fileRef = 2321713E1114B2BD00EA899B /* txt2tags25.py */; };
+		232171401114B2BD00EA899B /* txt2tags25.py in Resources */ = {isa = PBXBuildFile; fileRef = 2321713E1114B2BD00EA899B /* txt2tags25.py */; };
+		237B6D161115646600B4BBE0 /* Spanakopita Insert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */; };
+		237B6D171115646600B4BBE0 /* Spanakopita Insert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */; };
 		238978191111FEC0008D504F /* SpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978161111FEC0008D504F /* SpPlugin.m */; };
-		2389781A1111FEC0008D504F /* SpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978181111FEC0008D504F /* SpWindowController.m */; };
-		2389781C1111FED2008D504F /* Spanakopita.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2389781B1111FED2008D504F /* Spanakopita.xib */; };
+		2389781A1111FEC0008D504F /* SpInsertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978181111FEC0008D504F /* SpInsertController.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -19,11 +34,24 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		23216EF7111405A900EA899B /* SpUrlProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpUrlProtocol.h; sourceTree = "<group>"; };
+		23216EF8111405A900EA899B /* SpUrlProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpUrlProtocol.m; sourceTree = "<group>"; };
+		23216EFC11140A2A00EA899B /* SpErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpErrors.h; sourceTree = "<group>"; };
+		23216F0D1114124700EA899B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		23216FD6111415A400EA899B /* Spanakaopita Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spanakaopita Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23216FD8111415A400EA899B /* Spanakaopita Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Spanakaopita Test-Info.plist"; sourceTree = "<group>"; };
+		23216FE5111415F300EA899B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		232170151114164F00EA899B /* Spanakopita Test.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "Spanakopita Test.xib"; sourceTree = "<group>"; };
+		2321701C111416AF00EA899B /* SpTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpTest.h; sourceTree = "<group>"; };
+		2321701D111416AF00EA899B /* SpTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpTest.m; sourceTree = "<group>"; };
+		2321710A1114ACD500EA899B /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
+		2321713E1114B2BD00EA899B /* txt2tags25.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = txt2tags25.py; sourceTree = "<group>"; };
+		237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "Spanakopita Insert.xib"; sourceTree = "<group>"; };
 		238978151111FEC0008D504F /* SpPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpPlugin.h; sourceTree = "<group>"; };
 		238978161111FEC0008D504F /* SpPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpPlugin.m; sourceTree = "<group>"; };
-		238978171111FEC0008D504F /* SpWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpWindowController.h; sourceTree = "<group>"; };
-		238978181111FEC0008D504F /* SpWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpWindowController.m; sourceTree = "<group>"; };
-		2389781B1111FED2008D504F /* Spanakopita.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Spanakopita.xib; sourceTree = "<group>"; };
+		238978171111FEC0008D504F /* SpInsertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpInsertController.h; sourceTree = "<group>"; };
+		238978181111FEC0008D504F /* SpInsertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpInsertController.m; sourceTree = "<group>"; };
+		238978691112C288008D504F /* TextMate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextMate.h; sourceTree = "<group>"; };
 		32DBCF630370AF2F00C91783 /* Spanakopita_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spanakopita_Prefix.pch; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Spanakopita.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Spanakopita.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -31,11 +59,23 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		23216FD4111415A400EA899B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23216FDE111415BC00EA899B /* Cocoa.framework in Frameworks */,
+				23216FDF111415BC00EA899B /* WebKit.framework in Frameworks */,
+				2321710B1114ACD500EA899B /* QuickLook.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D5B49B3048680CD000E48DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				232171151114ACDF00EA899B /* QuickLook.framework in Frameworks */,
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+				23216F0E1114124700EA899B /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +85,8 @@
 		089C166AFE841209C02AAC07 /* Spanakopita */ = {
 			isa = PBXGroup;
 			children = (
+				232171351114B09A00EA899B /* txt2tags */,
+				23216FD11114158C00EA899B /* Test Classes */,
 				08FB77AFFE84173DC02AAC07 /* Classes */,
 				32C88E010371C26100C91783 /* Other Sources */,
 				089C167CFE841241C02AAC07 /* Resources */,
@@ -66,7 +108,9 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2389781B1111FED2008D504F /* Spanakopita.xib */,
+				237B6D151115646600B4BBE0 /* Spanakopita Insert.xib */,
+				232170151114164F00EA899B /* Spanakopita Test.xib */,
+				23216FD8111415A400EA899B /* Spanakaopita Test-Info.plist */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -78,8 +122,12 @@
 			children = (
 				238978151111FEC0008D504F /* SpPlugin.h */,
 				238978161111FEC0008D504F /* SpPlugin.m */,
-				238978171111FEC0008D504F /* SpWindowController.h */,
-				238978181111FEC0008D504F /* SpWindowController.m */,
+				23216EF7111405A900EA899B /* SpUrlProtocol.h */,
+				23216EF8111405A900EA899B /* SpUrlProtocol.m */,
+				238978171111FEC0008D504F /* SpInsertController.h */,
+				238978181111FEC0008D504F /* SpInsertController.m */,
+				238978691112C288008D504F /* TextMate.h */,
+				23216EFC11140A2A00EA899B /* SpErrors.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -87,6 +135,8 @@
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2321710A1114ACD500EA899B /* QuickLook.framework */,
+				23216F0D1114124700EA899B /* WebKit.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -106,8 +156,27 @@
 			isa = PBXGroup;
 			children = (
 				8D5B49B6048680CD000E48DA /* Spanakopita.bundle */,
+				23216FD6111415A400EA899B /* Spanakaopita Test.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		23216FD11114158C00EA899B /* Test Classes */ = {
+			isa = PBXGroup;
+			children = (
+				23216FE5111415F300EA899B /* main.m */,
+				2321701C111416AF00EA899B /* SpTest.h */,
+				2321701D111416AF00EA899B /* SpTest.m */,
+			);
+			name = "Test Classes";
+			sourceTree = "<group>";
+		};
+		232171351114B09A00EA899B /* txt2tags */ = {
+			isa = PBXGroup;
+			children = (
+				2321713E1114B2BD00EA899B /* txt2tags25.py */,
+			);
+			name = txt2tags;
 			sourceTree = "<group>";
 		};
 		32C88E010371C26100C91783 /* Other Sources */ = {
@@ -121,6 +190,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		23216FD5111415A400EA899B /* Spanakaopita Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23216FDB111415A500EA899B /* Build configuration list for PBXNativeTarget "Spanakaopita Test" */;
+			buildPhases = (
+				23216FD2111415A400EA899B /* Resources */,
+				23216FD3111415A400EA899B /* Sources */,
+				23216FD4111415A400EA899B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Spanakaopita Test";
+			productName = "Spanakaopita Test";
+			productReference = 23216FD6111415A400EA899B /* Spanakaopita Test.app */;
+			productType = "com.apple.product-type.application";
+		};
 		8D5B49AC048680CD000E48DA /* Spanakopita */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "Spanakopita" */;
@@ -152,29 +238,54 @@
 			projectRoot = "";
 			targets = (
 				8D5B49AC048680CD000E48DA /* Spanakopita */,
+				23216FD5111415A400EA899B /* Spanakaopita Test */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		23216FD2111415A400EA899B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				232170171114165500EA899B /* Spanakopita Test.xib in Resources */,
+				232171401114B2BD00EA899B /* txt2tags25.py in Resources */,
+				237B6D171115646600B4BBE0 /* Spanakopita Insert.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D5B49AF048680CD000E48DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
-				2389781C1111FED2008D504F /* Spanakopita.xib in Resources */,
+				2321713F1114B2BD00EA899B /* txt2tags25.py in Resources */,
+				237B6D161115646600B4BBE0 /* Spanakopita Insert.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		23216FD3111415A400EA899B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23216FFA1114162F00EA899B /* main.m in Sources */,
+				23216FE0111415C300EA899B /* SpPlugin.m in Sources */,
+				23216FE1111415C300EA899B /* SpInsertController.m in Sources */,
+				23216FE2111415C300EA899B /* SpUrlProtocol.m in Sources */,
+				23217047111419DA00EA899B /* SpTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D5B49B1048680CD000E48DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				238978191111FEC0008D504F /* SpPlugin.m in Sources */,
-				2389781A1111FEC0008D504F /* SpWindowController.m in Sources */,
+				2389781A1111FEC0008D504F /* SpInsertController.m in Sources */,
+				23216EF9111405A900EA899B /* SpUrlProtocol.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +343,7 @@
 		1DEB913F08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -240,18 +351,68 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
 		1DEB914008733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = i386;
+			};
+			name = Release;
+		};
+		23216FD9111415A500EA899B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "Spanakaopita Test-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "Spanakaopita Test";
+			};
+			name = Debug;
+		};
+		23216FDA111415A500EA899B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "Spanakaopita Test-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "Spanakaopita Test";
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -272,6 +433,15 @@
 			buildConfigurations = (
 				1DEB913F08733D840010E9CD /* Debug */,
 				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23216FDB111415A500EA899B /* Build configuration list for PBXNativeTarget "Spanakaopita Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23216FD9111415A500EA899B /* Debug */,
+				23216FDA111415A500EA899B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

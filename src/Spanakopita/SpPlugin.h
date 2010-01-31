@@ -8,19 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SpWindowController.h"
-
-@protocol TMPlugInController
-- (float)version;
-@end
+#import "TextMate.h"
 
 @interface SpPlugin : NSObject {
-	SpWindowController* spWindowController;
+	NSMutableArray *spWindowControllers;
 	NSMenu* windowMenu;
-	NSMenuItem* showClockMenuItem;	
+	NSMenuItem* showClockMenuItem;
 }
 
 - (void)installMenuItem;
 - (void)uninstallMenuItem;
-- (void)disposeWindow;
+- (void)disposeWindows;
 
 @end
