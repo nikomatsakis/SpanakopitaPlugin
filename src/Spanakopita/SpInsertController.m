@@ -7,6 +7,7 @@
 //
 
 #import "SpInsertController.h"
+#import "SpUrlProtocol.h"
 #import "TextMate.h"
 
 int SpWindowControllerContext;
@@ -36,6 +37,7 @@ int SpWindowControllerContext;
 				self.webView = [[[WebView alloc] initWithFrame:[subview frame]] autorelease];
 				[webView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
 				[webView setShouldCloseWithWindow:YES];
+				[webView setFrameLoadDelegate:self];
 				
 				// Substitute and connect the various views:
 				[subview retain];
@@ -63,9 +65,12 @@ int SpWindowControllerContext;
 
 - (void)reloadCurrentFilePath
 {
-	self.currentFilePath = [self.projectWindow representedFilename];
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"sp://%@", currentFilePath]];
-	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
+	NSString *path = [[self.projectWindow representedFilename] stringByStandardizingPath];
+	if(![currentFilePath isEqual:path]) {
+		self.currentFilePath = path;
+		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", SP_SCHEME, currentFilePath]];
+		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
+	}
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -76,6 +81,26 @@ int SpWindowControllerContext;
 	else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
+}
+
+#pragma mark WebFrameLoadDelegate Informal Protocol
+
+- (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame
+{
+    // Only report feedback for the main frame.
+    if (frame == [sender mainFrame]) {
+        NSURL *url = [[[frame provisionalDataSource] request] URL];
+		if([[url scheme] isEqual:SP_SCHEME] || [url isFileURL]) {
+			NSString *path = [[url path] stringByStandardizingPath];
+			if(![self.currentFilePath isEqual:path]) {
+				self.currentFilePath = path;
+				NSString *textMateURL = [NSString stringWithFormat:@"txmt://open?url=file://%@", path];
+				NSURL *url = [NSURL URLWithString:textMateURL];
+				NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+				[workspace openURL:url];
+			}
+		}
+    }
 }
 
 @end
