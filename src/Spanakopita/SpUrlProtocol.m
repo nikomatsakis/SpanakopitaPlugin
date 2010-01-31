@@ -208,7 +208,7 @@ static NSData* SpImageToPng(CGImageRef image)
 	 *     make the path and arguments configurable somehow. */
 	
 	NSBundle *bundle = [NSBundle bundleForClass:[SpPlugin class]];
-	NSString *txt2tagsPath = [bundle pathForResource:@"txt2tags25" ofType:@"py"];
+	NSString *txt2tagsPath = [bundle pathForResource:@"txt2tags" ofType:@"py"];
 	NSArray *arguments = [NSArray arrayWithObjects:@"-t", @"html", @"-i", @"-", nil];
 	
 	return [self runCommand:txt2tagsPath arguments:arguments mimeType:@"text/html" input:input];

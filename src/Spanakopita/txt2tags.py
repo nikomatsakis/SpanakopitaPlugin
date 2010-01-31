@@ -1492,7 +1492,7 @@ def getRegexes():
 	#
 	
 	# [image.EXT]
-	patt_img = r'\[([\w_,.+%$#@!?+~/-]+\.(png|jpe?g|gif|eps|bmp|graffle|dot))\]' # XXX added graffle, dot as a hack
+	patt_img = r'\[([\w_,.+%$#@!?+~/-]+\.(png|jpe?g|gif|eps|bmp))\]'
 	
 	# Link things
 	# http://www.gbiv.com/protocols/uri/rfc/rfc3986.html
