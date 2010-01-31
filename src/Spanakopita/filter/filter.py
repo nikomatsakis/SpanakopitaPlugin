@@ -127,6 +127,11 @@ class Table(ParentAst):
     # Children: table rows.
     html = "table"
     
+    def to_html(self, out):
+        out.write('<table border="1">\n')
+        for c in self.children_a: c.to_html(out)
+        out.write('</table>\n')
+    
 class TableRow(ParentAst):
     # Children: table columns.
     html = "tr"
@@ -183,30 +188,30 @@ class Link(ParentAst):
 #   one or mode INDENT and UNDENT tokens are produced.
     
 # Applied within lines:
-WITHIN_REGULAR_EXPRESSIONS = {
-    'ITAL': re.compile(r'//'),
-    'BOLD': re.compile(r'\*\*'),
-    'UNDER': re.compile(r'__'),
-    'STRIKE': re.compile(r'--'),
-    
-    'TABLE_ROW': re.compile(r'\|\|'),
-    'TABLE_CELL': re.compile(r'\|'),
-    
-    'L_CURLY': re.compile(r'{'),
-    'R_CURLY': re.compile(r'}'),
-    
-    'AT': re.compile(r'@'),
-    
-    'L_SQUARE': re.compile(r'\['),
-    'R_SQUARE': re.compile(r'\]'),
-}
+WITHIN_REGULAR_EXPRESSIONS = [
+    ('ITAL', re.compile(r'//')),
+    ('BOLD', re.compile(r'\*\*')),
+    ('UNDER', re.compile(r'__')),
+    ('STRIKE', re.compile(r'--')),
+
+    ('TABLE_CELL', re.compile(r'\|')),
+
+    ('L_CURLY', re.compile(r'{')),
+    ('R_CURLY', re.compile(r'}')),
+
+    ('AT', re.compile(r'@')),
+
+    ('L_SQUARE', re.compile(r'\[')),
+    ('R_SQUARE', re.compile(r'\]'))
+]
 
 # Checked only at the start of a line:
-START_REGULAR_EXPRESSIONS = {
-    'HEADER': re.compile(r'___'),
-    'BULLET': re.compile(r'-'),
-    'HASH': re.compile(r'\#')
-}
+START_REGULAR_EXPRESSIONS = [
+    ('HEADER', re.compile(r'___')),
+    ('BULLET', re.compile(r'-')),
+    ('HASH', re.compile(r'\#')),
+    ('TABLE_ROW', re.compile(r'\|\|')),
+]
 
 class Token(object):
     def __init__(self, tag, u_text):
@@ -267,7 +272,7 @@ class Lexer(object):
         return u_result
         
     def is_word(self, c):
-        return not (c.isspace() or c in u"*/\\{}[]|\n")
+        return not (c.isspace() or c in u"_-*/\\{}[]|\n")
         
     def next(self):
         self._next()        
@@ -312,13 +317,13 @@ class Lexer(object):
         
         # Check for characters only significant at the start of the line:
         if self.eol:
-            for (tag, regexp) in START_REGULAR_EXPRESSIONS.items():
+            for (tag, regexp) in START_REGULAR_EXPRESSIONS:
                 if self.check_regexp(tag, regexp):
                     return
             self.eol = False
                     
         # Check for all special characters:
-        for (tag, regexp) in WITHIN_REGULAR_EXPRESSIONS.items():
+        for (tag, regexp) in WITHIN_REGULAR_EXPRESSIONS:
             if self.check_regexp(tag, regexp):
                 return 
                 
@@ -409,7 +414,7 @@ def elems(lexer, a_parent, stop_on_tags):
             a_parent.append_child(any_list(lexer))
             continue
 
-        if lexer.is_a('TABLE_START'):
+        if lexer.is_a('TABLE_ROW'):
             a_parent.append_child(table(lexer))
             continue
             
@@ -432,7 +437,6 @@ def elems(lexer, a_parent, stop_on_tags):
 
         if lexer.token.tag in BEAUTIFIER_TOKENS:
             a_parent.append_child(beautifier(lexer))
-            lexer.next()
             continue
 
         if lexer.is_a('INDENT'):
@@ -518,17 +522,24 @@ def any_list(lexer):
         a_item = list_item(lexer)
         a_list.append_child(a_item)
     return a_list
-
-def indented(lexer):
-    lexer.next()
-    if lexer.token.tag in LIST_TOKENS:
-        a_result = any_list(lexer)
-    else:
-        a_result = Indented(lexer.pos)
-        elems(lexer, a_indented, ())
+    
+def elems_until_undent(lexer, a_parent):
+    elems(lexer, a_parent, ())
     lexer.require(['UNDENT'])
     lexer.next()
-    return a_result
+    return a_parent
+
+def indented(lexer):
+    lexer.next() # consume INDENT
+    if lexer.token.tag in LIST_TOKENS:
+        # An indented list is just a list.
+        a_result = any_list(lexer)
+        lexer.require(['UNDENT'])
+        lexer.next()
+        return a_result
+    else:
+        a_result = Indented(lexer.pos)
+        return elems_until_undent(lexer, a_result)
 
 def table_row(lexer):
     a_row = TableRow(lexer.pos)
@@ -536,13 +547,25 @@ def table_row(lexer):
     while True:
         # Consume a CELL:
         a_cell = TableCell(lexer.pos)
-        lexer.next() 
-        elems(lexer, a_cell, [])
         a_row.append_child(a_cell)
+        lexer.next() 
         
-        # If we found a separator, consume another CELL:
+        skip_space(lexer)
+        
+        # A cell followed by a newline and an indent
+        # reads its content until the undent.  Otherwise,
+        # we read until a blank line, row, or cell:
+        if lexer.is_a('INDENT'):
+            lexer.next()
+            elems_until_undent(lexer, a_cell)
+        else:
+            elems(lexer, a_cell, ['BLANK_LINE', 'TABLE_ROW', 'TABLE_CELL'])
+        
+        # If we found a cell separator, consume another CELL:
         if lexer.token.tag == 'TABLE_CELL': 
-            continue            
+            continue       
+            
+        # Otherwise, the row is finished.     
         return a_row
         
 def table(lexer):
