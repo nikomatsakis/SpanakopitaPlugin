@@ -9,13 +9,10 @@
 {
 	if((self = [super initWithWindowNibName:@"SpanakopitaWindow"])) {
 		rootNode = [[SpNode alloc] initWithPath:path];
+		[self loadWindow];
+		[SpInsertController insertIntoProjectWindow:[self window]];
 	}
 	return self;
-}
-
-- (void) windowDidLoad
-{
-//	[SpInsertController insertIntoProjectWindow:[self window]];
 }
 				
 @end
