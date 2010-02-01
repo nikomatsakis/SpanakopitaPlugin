@@ -1,10 +1,4 @@
-//
-//  SpUrlLoader.m
-//  Spanakopita
-//
-//  Created by Niko Matsakis on 1/30/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
+/** See file LICENSE.txt for licensing information. **/
 
 #import <Carbon/Carbon.h>
 #import <QuickLook/QuickLook.h>
@@ -16,8 +10,7 @@
 - (void) loadFile;
 - (BOOL) loadDirectory;
 - (BOOL) loadFileAsIs;
-- (BOOL) interpretSpFile;
-- (BOOL) interpretDotFile;
+- (BOOL) run:(NSArray*)words stdin:(BOOL)asStdin;
 - (BOOL) interpretQuickLookFile;
 @end
 
@@ -49,14 +42,49 @@ static NSData* SpImageToPng(CGImageRef image)
 	return request;
 }
 
++ (void) initialize
+{
+	[super initialize];
+	
+	NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+	
+	[dictionary setObject:@"RUN_STDIN text/html UTF-8 ${FILTERPY}"
+				   forKey:DEFAULTS_PREFIX @"sp"];
+
+	[dictionary setObject:@"RUN image/png UTF-8 /usr/local/bin/dot -T png ${PATH}"
+				   forKey:DEFAULTS_PREFIX @"dot"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"txt"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"png"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"jpg"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"jpeg"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"html"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"txt"];
+	
+	[dictionary setObject:@"PASSTHROUGH"
+				   forKey:DEFAULTS_PREFIX @"DEFAULT"];
+	
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	[defaults registerDefaults:dictionary];
+}
+
 - (void) startLoading
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSURL *url = [[self request] URL];
 	NSString *path = [url path];	
 	BOOL isDirectory;
-	
-	NSLog(@"startLoading: %@", path);
 	
 	if([fileManager fileExistsAtPath:path isDirectory:&isDirectory]) {
 		if(!isDirectory) {
@@ -83,19 +111,21 @@ static NSData* SpImageToPng(CGImageRef image)
 	
 	if([fileManager isReadableFileAtPath:path]) {
 		NSString *ext = [path pathExtension];
-		ext = [ext lowercaseString];
-		NSSet *asIsExtensions = [NSSet setWithObjects:
-								 @"png", @"jpg", @"jpeg", @"html", @"txt", nil];
+		NSString *key = [DEFAULTS_PREFIX stringByAppendingString:[ext lowercaseString]];
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		NSString *configuration = [defaults objectForKey:key];
+		if(!configuration)
+			configuration = [defaults objectForKey:DEFAULTS_PREFIX @"DEFAULT"];
 		
-		if([asIsExtensions containsObject:ext]) {
+		NSArray *words = [configuration componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		
+		NSString *cmd = [words objectAtIndex:0];
+		if([cmd isEqual:@"RUN"])
+			stopped = [self run:words stdin:NO];
+		else if([cmd isEqual:@"RUN_STDIN"])
+			stopped = [self run:words stdin:YES];
+		else
 			stopped = [self loadFileAsIs];
-		} else if ([ext isEqual:@"sp"]) {
-			stopped = [self interpretSpFile];
-		} else if ([ext isEqual:@"dot"]) {
-			stopped = [self interpretDotFile];
-		} else {
-			stopped = [self interpretQuickLookFile];
-		}
 	} else {
 		[[self client] URLProtocol:self
 				  didFailWithError:[NSError errorWithDomain:SP_ERROR_DOMAIN
@@ -104,11 +134,30 @@ static NSData* SpImageToPng(CGImageRef image)
 															 [NSString stringWithFormat:NSLocalizedString(@"Not readable: %@", @""), path],
 															 NSLocalizedDescriptionKey,
 															 nil]]];
+		stopped = NO;
+	}	
+	
+	if(stopped) {
+		// do we need to take some action if we aborted early?
+	}	   
+}
+
+- (NSString*) subst:(NSString*)input
+{
+	NSRange range = [input rangeOfString:@"${FILTERPY}"];
+	if(range.location != NSNotFound) {
+		NSBundle *bundle = [NSBundle bundleForClass:[SpPlugin class]];
+		NSString *filterPy = [bundle pathForResource:@"filter" ofType:@"py"];
+		input = [input stringByReplacingOccurrencesOfString:@"${FILTERPY}" withString:filterPy];
 	}
 	
-	if(stopped) { 
-		// ...?
+	range = [input rangeOfString:@"${PATH}"];
+	if(range.location != NSNotFound) {
+		NSString *path = [[[self request] URL] path];
+		input = [input stringByReplacingOccurrencesOfString:@"${PATH}" withString:path];
 	}
+	
+	return input;
 }
 
 - (BOOL) loadFileAsIs
@@ -127,33 +176,15 @@ static NSData* SpImageToPng(CGImageRef image)
 											 expectedContentLength:-1
 												  textEncodingName:@"UTF-8"] autorelease]];
 	return NO;
-	
-//	NSError *error;
-//	NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-//	if(!data) {
-//		[[self client] URLProtocol:self
-//				  didFailWithError:[NSError errorWithDomain:SP_ERROR_DOMAIN
-//													   code:SP_NOT_READABLE
-//												   userInfo:error]];		
-//	} else {
-//		[[self client] URLProtocol:self
-//				didReceiveResponse:[[[NSURLResponse alloc] initWithURL:[[self request] url]									 
-//															  MIMEType:<#(NSString *)MIMEType#> 
-//												 expectedContentLength:[data length]
-//													  textEncodingName:nil] autorelease]
-//				cacheStoragePolicy:nil];
-//		 
-//	}
 }
 
 - (BOOL) runCommand:(NSString*)cmd 
 		  arguments:(NSArray*)arguments 
 		   mimeType:(NSString*)mimeType
+			encoding:(NSString*)encoding
 			  input:(id)input
 {
 	NSPipe *output = [NSPipe pipe];
-	
-	NSLog(@"cmd: %@ arguments: %@", cmd, arguments);
 	
 	NSTask *task = [[NSTask alloc] init];
 	[task setLaunchPath:cmd];
@@ -169,13 +200,11 @@ static NSData* SpImageToPng(CGImageRef image)
 	int status = [task terminationStatus];
 	
 	if (status == 0) {
-		/* XXX Make text encoding configurable. */
-		
 		[[self client] URLProtocol:self
 				didReceiveResponse:[[[NSURLResponse alloc] initWithURL:[[self request] URL]									 
 															  MIMEType:mimeType
 												 expectedContentLength:[data length]
-													  textEncodingName:@"UTF-8"] autorelease]
+													  textEncodingName:encoding] autorelease]
 				cacheStoragePolicy:NSURLCacheStorageNotAllowed];		
 		
 		[[self client] URLProtocol:self didLoadData:data];
@@ -194,36 +223,31 @@ static NSData* SpImageToPng(CGImageRef image)
 	return NO;
 }
 
-- (BOOL) interpretSpFile
+- (BOOL) run:(NSArray*)words stdin:(BOOL)asStdin
 {
-	if(stop)
-		return YES;
+	NSString *path = [[[self request] URL] path];	
+	NSString *mimeType = [words objectAtIndex:1];
+	NSString *encoding = [words objectAtIndex:2];
 	
-	NSString *path = [[[self request] URL] path];
+	NSString *cmd = [words objectAtIndex:3];
+	NSMutableArray *args = [NSMutableArray arrayWithCapacity:[words count] - 4];
 	
-	/* XXX Get input from TextMate buffer if open */
-	NSFileHandle *input = [NSFileHandle fileHandleForReadingAtPath:path];
+	cmd = [self subst:cmd];
+	for(int i = 4, c = [words count]; i < c; i++)
+		[args addObject:[self subst:[words objectAtIndex:i]]];
 	
-	/* XXX Either bring the python in-process (less configurable) or
-	 *     make the path and arguments configurable somehow. */
+	NSFileHandle *input;
+	if(asStdin)
+		input = [NSFileHandle fileHandleForReadingAtPath:path];
+	else
+		input = [NSFileHandle fileHandleWithNullDevice];
 	
-	NSBundle *bundle = [NSBundle bundleForClass:[SpPlugin class]];
-	NSString *txt2tagsPath = [bundle pathForResource:@"txt2tags" ofType:@"py"];
-	NSArray *arguments = [NSArray arrayWithObjects:@"-t", @"html", @"-i", @"-", nil];
+	NSLog(@"Spanakopita: Processing %@ with command %@ with arguments %@ stdin=%d",
+		  path, cmd, args, asStdin);
 	
-	return [self runCommand:txt2tagsPath arguments:arguments mimeType:@"text/html" input:input];
+	return [self runCommand:cmd arguments:args mimeType:mimeType encoding:encoding input:input];
 }
 
-- (BOOL) interpretDotFile
-{
-	if(stop)
-		return YES;
-	
-	/* XXX Make path and arguments configurable */
-	NSString *path = [[[self request] URL] path];
-	NSArray *arguments = [NSArray arrayWithObjects:@"-T", @"png", path, nil];	
-	return [self runCommand:@"/usr/local/bin/dot" arguments:arguments mimeType:@"text/png" input:[NSFileHandle fileHandleWithNullDevice]];
-}
 
 /*
 - (BOOL) realQuickLook

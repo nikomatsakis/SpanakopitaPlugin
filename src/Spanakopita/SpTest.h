@@ -1,10 +1,4 @@
-//
-//  SpTest.h
-//  Spanakopita
-//
-//  Created by Niko Matsakis on 1/30/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
+/** See file LICENSE.txt for licensing information. **/
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>

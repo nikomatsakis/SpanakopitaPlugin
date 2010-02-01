@@ -20,11 +20,7 @@
 		2321710B1114ACD500EA899B /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2321710A1114ACD500EA899B /* QuickLook.framework */; };
 		232171151114ACDF00EA899B /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2321710A1114ACD500EA899B /* QuickLook.framework */; };
 		237B6D771115A70800B4BBE0 /* filter.py in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D751115A70800B4BBE0 /* filter.py */; };
-		237B6D781115A70800B4BBE0 /* markup.sp in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D761115A70800B4BBE0 /* markup.sp */; };
 		237B6D791115A70800B4BBE0 /* filter.py in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D751115A70800B4BBE0 /* filter.py */; };
-		237B6D7A1115A70800B4BBE0 /* markup.sp in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D761115A70800B4BBE0 /* markup.sp */; };
-		237B6D7D1115E20800B4BBE0 /* txt2tags.py in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D7C1115E20800B4BBE0 /* txt2tags.py */; };
-		237B6D7E1115E20800B4BBE0 /* txt2tags.py in Resources */ = {isa = PBXBuildFile; fileRef = 237B6D7C1115E20800B4BBE0 /* txt2tags.py */; };
 		238978191111FEC0008D504F /* SpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978161111FEC0008D504F /* SpPlugin.m */; };
 		2389781A1111FEC0008D504F /* SpInsertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978181111FEC0008D504F /* SpInsertController.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -48,8 +44,6 @@
 		2321701D111416AF00EA899B /* SpTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpTest.m; sourceTree = "<group>"; };
 		2321710A1114ACD500EA899B /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		237B6D751115A70800B4BBE0 /* filter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = filter.py; sourceTree = "<group>"; };
-		237B6D761115A70800B4BBE0 /* markup.sp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = markup.sp; sourceTree = "<group>"; };
-		237B6D7C1115E20800B4BBE0 /* txt2tags.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = txt2tags.py; sourceTree = "<group>"; };
 		238978151111FEC0008D504F /* SpPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpPlugin.h; sourceTree = "<group>"; };
 		238978161111FEC0008D504F /* SpPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpPlugin.m; sourceTree = "<group>"; };
 		238978171111FEC0008D504F /* SpInsertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpInsertController.h; sourceTree = "<group>"; };
@@ -88,7 +82,6 @@
 		089C166AFE841209C02AAC07 /* Spanakopita */ = {
 			isa = PBXGroup;
 			children = (
-				237B6D7C1115E20800B4BBE0 /* txt2tags.py */,
 				237B6D741115A70800B4BBE0 /* filter */,
 				23216FD11114158C00EA899B /* Test Classes */,
 				08FB77AFFE84173DC02AAC07 /* Classes */,
@@ -178,7 +171,6 @@
 			isa = PBXGroup;
 			children = (
 				237B6D751115A70800B4BBE0 /* filter.py */,
-				237B6D761115A70800B4BBE0 /* markup.sp */,
 			);
 			path = filter;
 			sourceTree = "<group>";
@@ -254,8 +246,6 @@
 			files = (
 				232170171114165500EA899B /* Spanakopita Test.xib in Resources */,
 				237B6D791115A70800B4BBE0 /* filter.py in Resources */,
-				237B6D7A1115A70800B4BBE0 /* markup.sp in Resources */,
-				237B6D7E1115E20800B4BBE0 /* txt2tags.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,8 +255,6 @@
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
 				237B6D771115A70800B4BBE0 /* filter.py in Resources */,
-				237B6D781115A70800B4BBE0 /* markup.sp in Resources */,
-				237B6D7D1115E20800B4BBE0 /* txt2tags.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,7 +312,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				PRODUCT_NAME = Spanakopita;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -341,7 +329,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				PRODUCT_NAME = Spanakopita;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;

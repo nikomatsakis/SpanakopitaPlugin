@@ -1,3 +1,5 @@
+___ A Test Document __________________________________________________
+
 This document demonstrates some of the features of
 {filter.py}. You can write inline code sections like this:
 {
@@ -8,10 +10,15 @@ This document demonstrates some of the features of
 }
 or you can just highlight a variable like {int *p}.  You can also
 do the usual **bold**, //italic//, --struck out--, and even __underlined__ text.
+You can ignore characters with \\: so \*\*bold\*\* just inserts asterixes.
 
-Images are with square brackets: [t2tpowered.png] and links are with [[double brackets @
-Test2.sp]].  Just linking to an sp file like [[Test2]] is particularly short.
+Images are with square brackets: [spanakopita.jpg] and links are with [[double
+brackets @ Test2.sp]]. If you omit the description, then a default one
+is provided based on the file name (like here [[@Test2.sp]])
+or the absolute URLs (like [[@http://www.google.com]]).
     
+______ Lists _________________________________________________________
+
 You should be able to create lists:
 - One Item
   
@@ -36,6 +43,8 @@ It should be possible to nest lists:
 - B
     - i
 Note that typing here is outside the list.
+
+______ Tables ________________________________________________________
 
 Finally, we can make tables:
 || a | b | c | d ||

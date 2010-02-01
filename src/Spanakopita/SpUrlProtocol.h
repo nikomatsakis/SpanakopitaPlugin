@@ -1,14 +1,9 @@
-//
-//  SpUrlLoader.h
-//  Spanakopita
-//
-//  Created by Niko Matsakis on 1/30/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
+/** See file LICENSE.txt for licensing information. **/
 
 #import <Cocoa/Cocoa.h>
 
 #define SP_SCHEME @"sp"
+#define DEFAULTS_PREFIX @"com.smallcultfollowing.Spanakopita:"
 
 @interface SpUrlProtocol : NSURLProtocol {
 	BOOL stop;

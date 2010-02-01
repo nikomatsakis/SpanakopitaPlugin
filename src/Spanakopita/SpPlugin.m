@@ -1,10 +1,4 @@
-//
-//  SpPlugin.m
-//  Spanakopita
-//
-//  Created by Niko Matsakis on 1/28/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
+/** See file LICENSE.txt for licensing information. **/
 
 #import "SpPlugin.h"
 #import "SpUrlProtocol.h"

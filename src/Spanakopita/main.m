@@ -1,10 +1,4 @@
-//
-//  main.m
-//  Flash2
-//
-//  Created by Nicholas Matsakis on 10/18/08.
-//  Copyright __MyCompanyName__ 2008 . All rights reserved.
-//
+/** See file LICENSE.txt for licensing information. **/
 
 #import <Cocoa/Cocoa.h>
 #import <stdlib.h>

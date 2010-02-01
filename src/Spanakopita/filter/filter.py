@@ -1,7 +1,86 @@
 #!/usr/bin/env python
 
-# Spanakopita markup tool.  The markup is loosely based on http://txt2tags.sf.net.
-# See markup.sp for an explanation.
+"""
+Spanakopita markup tool.  The markup is loosely based on a combination of
+http://txt2tags.sf.net with Python's concept of significant whitespace.
+
+Blank lines and indentation are significant. More indentation than the previous
+line will cause block indentation. In a list, indentation creates sublists. I
+strongly suggest avoiding tabs and using only spaces (Soft Tabs, in 
+TextMate-speak), although in theory the code should work so long as you don't
+mix them up.
+
+Comments and special:
+    ## At the beginning of a line is for special stuff.
+    ## TABLE_OF_CONTENTS  
+
+Headers:
+    ___ Level 1 __________________________________________________________
+    ______ Level 2 _______________________________________________________  
+    _________ Level 3 ____________________________________________________
+    Any number of trailing underscores is permitted.
+
+Escaping:
+    Backslash generally acts as an escape-character.
+
+Beautifiers:
+    //italics//
+    **bold**
+    __underline__
+    --strikeout--
+
+    Beautifiers can only be used **inline**.
+
+Code:
+    Code can be designated using { and }, either {inline} or in a block:
+    {
+        void aCodeBlock() {
+        
+        }
+    }
+    Links are still supported within code but all other markup is 
+    disabled.
+
+Lists:
+    Unordered Lists begin with "-":
+        - This
+            - Is
+        - An
+        - Unordered List
+    Ordered lists are the same but use "#".    
+
+Tables:
+    Place || at the beginning and end of a row.  Use | to separate
+    cells within a row.  Cells can either be defined inline:
+        || r1 c1 | r1 c2 | r1 c3 ||
+        || r2 c1 | c2 c2 | r2 c3 ||
+    Or using indentation:
+        ||
+            r1 c1
+        |
+            r1 c2
+        |   
+            r1 c3 
+        ||
+    You can also mix and match on a per-cell basis.  The advantage
+    of using indentation is that it supports nested tables.
+
+Meta-discussion about links:
+    In the examples that follow, a link may either be an absolute URL
+    or a relative path.  Relative paths may include spaces etc and we will
+    do our best to apply URL escaping in all cases.  
+
+Images:
+    [link] includes an image at the path ``link``.  The image will be 
+    be linked to its source in such a way that clicked it will cause the
+    source to be "opened".
+
+Links:
+    [[Some Text]] links to "Some Text.sp" with the link text "Some Text".
+    [[http://an.absolute.url/]] should work as well.
+    [[Some Text @ link]] links to {link} with the link text "Some Text".
+    [[[link] @ link]] links to {link} with an image.
+"""
 
 import sys, re, urllib
 
@@ -39,7 +118,10 @@ class ParentAst(Ast):
     def rstrip_text(self):
         if self.children_a and isinstance(self.children_a[-1], Text):
             u_text = self.children_a[-1].u_text.rstrip()
-            self.children_a[-1].u_text = u_text
+            if not u_text:
+                self.children_a[-1:] = [] # Remove last entry
+            else:
+                self.children_a[-1].u_text = u_text
         
     def append_text(self, pos, u_text):
         if self.children_a and isinstance(self.children_a[-1], Text):
@@ -86,6 +168,16 @@ class Indented(ParentAst):
 class Code(ParentAst):
     html = "pre"
 
+class Header(ParentAst):
+    def __init__(self, pos, level):
+        super(Header, self).__init__(pos)
+        self.level = level
+        
+    def to_html(self, out):
+        out.write('<h%d>' % self.level)
+        for c in self.children_a: c.to_html(out)
+        out.write('</h%d>' % self.level)
+    
 class Beautified(ParentAst):
     # Abstract.
     def to_html(self, out):
@@ -179,13 +271,13 @@ class Link(ParentAst):
 #
 # Newlines and whitespace are handled as follows: 
 #
-#   Ignorable whitespace generates the token SPACE.  This includes a single newline
-#   which does not change the indentation level.
+#   Ignorable whitespace generates the token SPACE.  This 
+#   includes a single newline which does not change the indentation level.
 #
 #   Two or more consecutive newlines generates the token BLANK_LINE.
 #
-#   In addition, whenever a newline is followed by a new level of indentation,
-#   one or mode INDENT and UNDENT tokens are produced.
+#   In addition, whenever a newline is followed by a new level of 
+#   indentation, one or mode INDENT or UNDENT tokens are produced.
     
 # Applied within lines:
 WITHIN_REGULAR_EXPRESSIONS = [
@@ -208,7 +300,7 @@ WITHIN_REGULAR_EXPRESSIONS = [
 
 # Checked only at the start of a line:
 START_REGULAR_EXPRESSIONS = [
-    ('HEADER', re.compile(r'___')),
+    ('HEADER', re.compile(r'___+')),
     ('BULLET', re.compile(r'-')),
     ('HASH', re.compile(r'\#')),
 ]
@@ -276,7 +368,7 @@ class Lexer(object):
         
     def next(self):
         self._next()        
-        sys.stderr.write("%s\n" % (self.token,))
+        #sys.stderr.write("%s\n" % (self.token,))
         return self.token
         
     def push_indentation_level(self, rel_amnt):
@@ -314,6 +406,12 @@ class Lexer(object):
                 self.indents.pop()
                 self.token = Token('UNDENT', u"")
                 return
+                
+        # Check for escape character:
+        if self.u_text[self.pos] == u"\\" and self.pos + 1 < len(self.u_text):
+            self.token = Token('TEXT', self.u_text[self.pos + 1])
+            self.pos += 2
+            return
         
         # Check for characters only significant at the start of the line:
         if self.eol:
@@ -410,6 +508,10 @@ def elems(lexer, a_parent, stop_on_tags):
             lexer.next()
             continue
             
+        if lexer.is_a('HEADER'):
+            a_parent.append_child(header(lexer))
+            continue
+            
         if lexer.token.tag in LIST_TOKENS:
             a_parent.append_child(any_list(lexer))
             continue
@@ -445,6 +547,17 @@ def elems(lexer, a_parent, stop_on_tags):
 
         return a_parent
         
+def header(lexer):
+    hlen = len(lexer.token.u_text) / 3
+    a_hdr = Header(lexer.pos, hlen)
+    u_text = lexer.skip_to_eol()
+    u_text = u_text.strip()
+    while u_text and u_text[-1] == '_': u_text = u_text[:-1]
+    u_text = u_text.strip()
+    a_hdr.append_text(lexer.pos, u_text)
+    lexer.next()
+    return a_hdr
+            
 def code(lexer):
     lexer.next()
     
@@ -514,7 +627,7 @@ def list_item(lexer):
     return a_item
     
 def any_list(lexer):
-    sys.stderr.write("any_list(%s)\n" % lexer.token)
+    #sys.stderr.write("any_list(%s)\n" % lexer.token)
     list_tag = lexer.token.tag
     ast_cls = LIST_TOKENS[list_tag]
     a_list = ast_cls(lexer.pos)
@@ -583,25 +696,13 @@ def skip_space(lexer):
     while lexer.token.tag == 'SPACE':
         lexer.next()
 
-scheme = re.compile(u"[a-z]+:")
+scheme = re.compile(ur"[a-zA-Z0-9+.-]+:")
 def path_to_url(u_path):
     if scheme.match(u_path):
         i = u_path.index(u":")+1
     else:
         i = 0
     return u_path[:i].encode('ASCII') + urllib.quote(u_path[i:].encode('UTF-8'))
-
-ext = re.compile("\.[a-zA-Z0-9]+$")
-def default_url(a_link):
-    u_path = u""
-    for a_node in a_link.children_a:
-        if isinstance(a_node, Text): 
-            u_path += a_node.u_text
-        
-    if not ext.search(u_path):
-        u_path += u".sp"
-    
-    return path_to_url(u_path)
     
 def url(lexer, a_node):
     # Only accept text and whitespace until ']':
@@ -609,8 +710,10 @@ def url(lexer, a_node):
     
     skip_space(lexer)
     
+    VERB_TAGS = ['TEXT', 'SPACE'] + BEAUTIFIER_TOKENS.keys()
+    
     while True:
-        if lexer.token.tag in ['TEXT', 'SPACE']:
+        if lexer.token.tag in VERB_TAGS:
             u_path += lexer.token.u_text
             lexer.next()
         elif lexer.is_a('R_SQUARE'):
@@ -618,6 +721,18 @@ def url(lexer, a_node):
             return
         else:
             raise ParseError(lexer, ['R_SQUARE'])
+            
+ext = re.compile(ur"\.[a-zA-Z0-9-]+$")
+def default_text(url):
+    u_text = urllib.unquote(url).decode("UTF-8")
+    
+    if not re.match(r"[a-zA-Z0-9+.-]+:", url):
+        # Relative: strip extension if any
+        mo = ext.search(u_text)
+        if mo:
+            u_text = u_text[:-len(mo.group(0))]
+            
+    return u_text
     
 def link_or_image(lexer):
     # Saw one '['
@@ -628,16 +743,19 @@ def link_or_image(lexer):
         a_link = Link(lexer.pos)
         lexer.next()
         elems(lexer, a_link, ['AT'])
-        if lexer.is_a('AT'):
-            a_link.rstrip_text()
-            lexer.next()
-            url(lexer, a_link)
-        else:
-            a_link.url = default_url(a_link)
+        lexer.require('AT')
+        a_link.rstrip_text()
+        lexer.next()
+        url(lexer, a_link)
         lexer.require(['R_SQUARE'])
         lexer.next()
         lexer.require(['R_SQUARE'])
         lexer.next()
+        
+        if not a_link.children_a:
+            # Insert default text from URL.
+            a_link.append_text(lexer.pos, default_text(a_link.url))
+            
         return a_link
         
     # Saw only one, must be an image:
