@@ -12,6 +12,11 @@ or you can just highlight a variable like {int *p}.  You can also
 do the usual **bold**, //italic//, --struck out--, and even __underlined__ text.
 You can ignore characters with \\: so \*\*bold\*\* just inserts asterixes.
 
+    Indented text will be "blockquoted".
+        Of course there might be more than one level of blockquote.
+    No problem at all.  It should be possible to use funky characters
+    like < and & as well as unicode like α, β, and γ.
+
 Images are with square brackets: [spanakopita.jpg] and links are with [[double
 brackets @ Test2.sp]]. If you omit the description, then a default one is
 provided based on the file name (like here [[@Test2.sp]]) or the absolute URLs
@@ -23,23 +28,19 @@ ______ Lists _________________________________________________________
 You should be able to create lists:
 - One Item
   
-  A continuation of the first item that is very long so it must span multiple lines, but it's 
-  still the same item because it is indented to match the text after the bullet.
+  A continuation of the first item that is very long so it must span multiple
+  lines, but it's still the same item because it is indented to match the text
+  after the bullet.
 - Two Items
-- Three Items, and this one is very long so it must span multiple lines, but it's still the same
-  item because it is indented to match the text after the bullet.
-
-It is also possible to make numbered lists:
-# First item.
-# Second item.
-# Third item.
+- Three Items, and this one is very long so it must span multiple lines, but it's
+  still the same item because it is indented to match the text after the bullet.
 
 It should be possible to nest lists:
 - A
     - i
-        # 1
-        # 2
-        # 3
+        - 1
+        - 2
+        - 3
     - ii
 - B
     - i

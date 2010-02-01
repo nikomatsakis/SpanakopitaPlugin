@@ -1,6 +1,7 @@
 graph G {
     run [URL="Test.sp"];
 	run -- intr;
+	intr -- foo;
 	intr -- runbl;
 	runbl -- run;
 	run -- kernel;

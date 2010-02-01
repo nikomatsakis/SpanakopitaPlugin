@@ -2,19 +2,22 @@
 
 #import "SpTest.h"
 #import "SpUrlProtocol.h"
+#import "SpInsertController.h"
 
 @implementation SpTest
 
-@synthesize webView, curPath;
+@synthesize window, curPath;
 
 - (void) awakeFromNib
 {
 	[NSURLProtocol registerClass:[SpUrlProtocol class]];
+	
+	[SpInsertController insertIntoProjectWindow:window];
 }
 
 - (void) dealloc
 {
-	self.webView = nil;
+	self.window = nil;
 	[super dealloc];
 }
 
@@ -28,9 +31,7 @@
 	if(res == NSFileHandlingPanelOKButton) {
 		NSURL *url = [[panel URLs] objectAtIndex:0];
 		NSString *path = [url path];
-		self.curPath = [@"sp://" stringByAppendingString:path];
-		NSURL *spUrl = [NSURL URLWithString:curPath];
-		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:spUrl]];
+		[window setRepresentedFilename:path];
 	}
 }
 

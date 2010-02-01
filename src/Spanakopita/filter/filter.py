@@ -140,6 +140,14 @@ class ParentAst(Ast):
         for c in self.children_a:
             c.dump(cindent, out)
             
+def escape_text(u_text):
+    unescaped = re.compile(ur"[a-zA-Z0-9./,;: (){}\[\]*+-]")
+    def filter(u_char):
+        if unescaped.match(u_char): 
+            return u_char.encode('ASCII')
+        return "&#x%04x;" % ord(u_char)
+    return "".join(filter(u) for u in u_text)
+            
 class Html(ParentAst):
     html = "html"
 
@@ -152,8 +160,7 @@ class Text(LeafAst):
         self.u_text = u_text        
         
     def to_html(self, out):
-        # XXX Escape entities.
-        out.write(self.u_text.encode("utf-8"))
+        out.write(escape_text(self.u_text))
         
     def __str__(self):
         return "%s(text=%s)" % (self.tag, self.u_text)
@@ -210,7 +217,7 @@ class List(ParentAst):
     pass
             
 class OrderedList(List):
-    html = "ul"
+    html = "ol"
     
 class Table(ParentAst):
     # Children: table rows.
@@ -229,17 +236,6 @@ class TableCell(ParentAst):
     # Children: misc elems.
     html = "td"
 
-class VerbatimText(LeafAst):
-    def __init__(self, pos, u_text):
-        super(VerbatimText, self).__init__(pos)
-        self.u_text = u_text
-        
-    def to_html(self, out):
-        out.write('<pre>' % self.u_text.encode("UTF-8"))
-                
-    def __str__(self):
-        return "%s(text=%s)" % (self.tag, self.u_text)
-    
 class Image(LeafAst):
     def __init__(self, pos):
         super(Image, self).__init__(pos)
@@ -772,8 +768,7 @@ def main(argv):
         else:
             ast.to_html(sys.stdout)
     except ParseError, e:
-        print e
-        raise
+		print "<html><body>Error: %s</body></html>" % e
             
 if __name__ == "__main__": 
     main(sys.argv[1:])

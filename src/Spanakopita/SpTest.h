@@ -4,10 +4,10 @@
 #import <WebKit/WebKit.h>
 
 @interface SpTest : NSObject {
-	WebView *webView;
+	NSWindow *window;
 	NSString *curPath;
 }
-@property(retain) IBOutlet WebView *webView;
+@property(retain) IBOutlet NSWindow *window;
 @property(retain) NSString *curPath;
 
 - (IBAction)load:(id)sender;

@@ -65,9 +65,8 @@ int SpPluginKey = 0;
 - (void)showSpanakopita:(id)sender
 {
 	NSWindow *currentProjectWindow = [self currentProjectWindow];
-	if(currentProjectWindow) {
+	if(currentProjectWindow) 
 		[SpInsertController insertIntoProjectWindow:currentProjectWindow];
-	}
 }
 
 @end

@@ -9,9 +9,9 @@
 	NSString *currentFilePath;	
 	WebView *webView;
 }
-@property(retain) NSWindow *projectWindow;
+@property(assign) NSWindow *projectWindow;
 @property(copy) NSString *currentFilePath;
-@property(retain) WebView *webView;
+@property(assign) WebView *webView;
 
 + insertIntoProjectWindow:(NSWindow*)aWindow;
 
