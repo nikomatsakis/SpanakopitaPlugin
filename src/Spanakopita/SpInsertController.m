@@ -3,19 +3,30 @@
 #import "SpInsertController.h"
 #import "SpUrlProtocol.h"
 #import "TextMate.h"
+#import <objc/runtime.h>
 
 int SpWindowControllerContext;
 
 @implementation SpInsertController
 
-@synthesize project, projectWindow, currentFilePath, webView;
+@synthesize projectWindow, currentFilePath, webView;
 
-- initWithProjectController:(OakProjectController*)aProject
-			  projectWindow:(NSWindow*)aWindow
++ insertIntoProjectWindow:(NSWindow*)aWindow
+{
+	id controller = objc_getAssociatedObject(aWindow, &SpWindowControllerContext);
+	if(controller == nil) { // No associated object?
+		SpInsertController *controller = [[[SpInsertController alloc] initWithProjectWindow:aWindow] autorelease];
+		objc_setAssociatedObject(aWindow, &SpWindowControllerContext, controller, OBJC_ASSOCIATION_RETAIN);		
+	}
+	return controller;
+}
+	
+- initWithProjectWindow:(NSWindow*)aWindow
 {
 	if((self = [super init])) {
-		self.project = aProject;
 		self.projectWindow = aWindow;
+		
+		NSLog(@"SpInsertController %p allocated", self);
 		
 		// Have to wrap the text editing area (an NSScrollView) with a Split view:
 		NSView *contentView = [projectWindow contentView];
@@ -37,7 +48,8 @@ int SpWindowControllerContext;
 				[subview retain];
 				[contentView replaceSubview:subview with:splitView];				
 				[splitView addSubview:subview];
-				[splitView addSubview:webView];				 
+				[splitView addSubview:webView];	
+				break;
 			}
 		}
 		
@@ -50,8 +62,9 @@ int SpWindowControllerContext;
 
 - (void)dealloc
 {
+	NSLog(@"SpInsertController %p freed", self);
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[projectWindow removeObserver:self forKeyPath:@"representedFilename"];
-	self.project = nil;
 	self.projectWindow = nil;
 	self.webView = nil;
 	[super dealloc];
@@ -86,7 +99,7 @@ int SpWindowControllerContext;
         NSURL *url = [[[frame provisionalDataSource] request] URL];
 		if([[url scheme] isEqual:SP_SCHEME] || [url isFileURL]) {
 			NSString *path = [[url path] stringByStandardizingPath];
-			if(![self.currentFilePath isEqual:path]) {
+			if(path && ![self.currentFilePath isEqual:path]) {
 				self.currentFilePath = path;
 				NSString *textMateURL = [NSString stringWithFormat:@"txmt://open?url=file://%@", path];
 				NSURL *url = [NSURL URLWithString:textMateURL];

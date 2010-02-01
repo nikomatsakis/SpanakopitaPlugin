@@ -42,12 +42,12 @@ Code:
     disabled.
 
 Lists:
-    Unordered Lists begin with "-":
+    Lists begin with "-":
         - This
             - Is
-        - An
-        - Unordered List
-    Ordered lists are the same but use "#".    
+        - A
+        - List
+    We only support numbered lists.
 
 Tables:
     Place || at the beginning and end of a row.  Use | to separate
@@ -209,12 +209,9 @@ class List(ParentAst):
     # Abstract.  Children: list items.
     pass
             
-class UnorderedList(List):
+class OrderedList(List):
     html = "ul"
     
-class OrderedList(List):
-    html = "ol"
-
 class Table(ParentAst):
     # Children: table rows.
     html = "table"
@@ -250,6 +247,7 @@ class Image(LeafAst):
         
     def to_html(self, out):
         out.write('<img src="%s">' % self.url)
+        #out.write('<object data="%s"></object>' % self.url)
                 
     def __str__(self):
         return "%s(url=%s)" % (self.tag, self.url)
@@ -302,7 +300,6 @@ WITHIN_REGULAR_EXPRESSIONS = [
 START_REGULAR_EXPRESSIONS = [
     ('HEADER', re.compile(r'___+')),
     ('BULLET', re.compile(r'-')),
-    ('HASH', re.compile(r'\#')),
 ]
 
 class Token(object):
@@ -482,8 +479,7 @@ class ParseError(Exception):
         return base + ", expected one of " + str(self.expected)
 
 LIST_TOKENS = {
-    'BULLET': UnorderedList,
-    'HASH': OrderedList
+    'BULLET': OrderedList,
 }
 
 BEAUTIFIER_TOKENS = {

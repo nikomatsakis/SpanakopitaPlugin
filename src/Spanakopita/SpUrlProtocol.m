@@ -51,7 +51,7 @@ static NSData* SpImageToPng(CGImageRef image)
 	[dictionary setObject:@"RUN_STDIN text/html UTF-8 ${FILTERPY}"
 				   forKey:DEFAULTS_PREFIX @"sp"];
 
-	[dictionary setObject:@"RUN image/png UTF-8 /usr/local/bin/dot -T png ${PATH}"
+	[dictionary setObject:@"RUN image/svg+xml UTF-8 /usr/local/bin/dot -T svg ${PATH}"
 				   forKey:DEFAULTS_PREFIX @"dot"];
 	
 	[dictionary setObject:@"PASSTHROUGH"

@@ -13,10 +13,11 @@ do the usual **bold**, //italic//, --struck out--, and even __underlined__ text.
 You can ignore characters with \\: so \*\*bold\*\* just inserts asterixes.
 
 Images are with square brackets: [spanakopita.jpg] and links are with [[double
-brackets @ Test2.sp]]. If you omit the description, then a default one
-is provided based on the file name (like here [[@Test2.sp]])
-or the absolute URLs (like [[@http://www.google.com]]).
-    
+brackets @ Test2.sp]]. If you omit the description, then a default one is
+provided based on the file name (like here [[@Test2.sp]]) or the absolute URLs
+(like [[ @ http://www.google.com]]). Note that spaces around the \@ sign are not
+significant.
+
 ______ Lists _________________________________________________________
 
 You should be able to create lists:

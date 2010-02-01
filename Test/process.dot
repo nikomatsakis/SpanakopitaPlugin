@@ -1,4 +1,5 @@
 graph G {
+    run [URL="Test.sp"];
 	run -- intr;
 	intr -- runbl;
 	runbl -- run;

@@ -5,13 +5,11 @@
 #import "TextMate.h"
 
 @interface SpPlugin : NSObject {
-	NSMutableArray *spInsertControllers;
 	NSMenu* windowMenu;
 	NSMenuItem* showClockMenuItem;
 }
 
 - (void)installMenuItem;
 - (void)uninstallMenuItem;
-- (void)disposeWindows;
 
 @end

@@ -10,7 +10,6 @@ int SpPluginKey = 0;
 - (id)initWithPlugInController:(id <TMPlugInController>)aController
 {
 	if(self = [super init]) {
-		spInsertControllers = [[NSMutableArray alloc] init];
 		[self installMenuItem];
 		
 		[NSURLProtocol registerClass:[SpUrlProtocol class]];
@@ -21,8 +20,6 @@ int SpPluginKey = 0;
 - (void)dealloc
 {
 	[self uninstallMenuItem];
-	[self disposeWindows];
-	[spInsertControllers release];
 	[super dealloc];
 }
 
@@ -46,7 +43,9 @@ int SpPluginKey = 0;
 		for(int separators = 0; index != [items count] && separators != 2; index++)
 			separators += [[items objectAtIndex:index] isSeparatorItem] ? 1 : 0;
 		
-		showClockMenuItem = [[NSMenuItem alloc] initWithTitle:@"Show Spanakopita" action:@selector(showSpanakopita:) keyEquivalent:@""];
+		showClockMenuItem = [[NSMenuItem alloc] initWithTitle:@"Spanakopify Project" 
+													   action:@selector(showSpanakopita:) 
+												keyEquivalent:@""];
 		[showClockMenuItem setTarget:self];
 		[windowMenu insertItem:showClockMenuItem atIndex:index ? index-1 : 0];
 	}
@@ -67,22 +66,7 @@ int SpPluginKey = 0;
 {
 	NSWindow *currentProjectWindow = [self currentProjectWindow];
 	if(currentProjectWindow) {
-		OakProjectController *currentProject = [currentProjectWindow windowController];
-		for(SpInsertController *spInsertController in spInsertControllers)
-			if(spInsertController.project == currentProject) { // already inserted
-				return;
-			}
-		
-		SpInsertController *spInsertController = [[[SpInsertController alloc] initWithProjectController:currentProject 
-																						 projectWindow:currentProjectWindow] autorelease];
-		[spInsertControllers addObject:spInsertController];
-	}
-}
-
-- (void)disposeWindows
-{
-	for(SpInsertController *spInsertController in spInsertControllers) {
-		[spInsertController release];
+		[SpInsertController insertIntoProjectWindow:currentProjectWindow];
 	}
 }
 
