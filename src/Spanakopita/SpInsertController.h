@@ -2,7 +2,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
-#import "TextMate.h"
 
 @interface SpInsertController : NSObject {
 	NSWindow *projectWindow;
