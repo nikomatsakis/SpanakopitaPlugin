@@ -12,7 +12,7 @@
 {
 	[NSURLProtocol registerClass:[SpUrlProtocol class]];
 	
-	[SpInsertController insertIntoProjectWindow:window];
+	[SpInsertController wrapTextMateEditorInProjectWindow:window];
 }
 
 - (void) dealloc

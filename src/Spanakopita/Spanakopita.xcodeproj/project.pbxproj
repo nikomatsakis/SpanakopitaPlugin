@@ -19,7 +19,7 @@
 		23CFB69E11177784001C3FCF /* SpNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB69D11177784001C3FCF /* SpNode.m */; };
 		23CFB6EE11177CAA001C3FCF /* SpanakopitaApp.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232170151114164F00EA899B /* SpanakopitaApp.xib */; };
 		23CFB6EF11177CAD001C3FCF /* SpanakopitaWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CFB68911177554001C3FCF /* SpanakopitaWindow.xib */; };
-		23CFB6F011177CB0001C3FCF /* Spanakopita.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23E9AF171116E77700F6C194 /* Spanakopita.xib */; };
+		23CFB6F011177CB0001C3FCF /* SpanakopitaInsert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23E9AF171116E77700F6C194 /* SpanakopitaInsert.xib */; };
 		23CFB6F111177CBD001C3FCF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 23216FE5111415F300EA899B /* main.m */; };
 		23CFB6F311177CBD001C3FCF /* SpTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2321701D111416AF00EA899B /* SpTest.m */; };
 		23CFB6F511177CBD001C3FCF /* SpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB67711177449001C3FCF /* SpAppDelegate.m */; };
@@ -32,7 +32,7 @@
 		23CFB70411177CE1001C3FCF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23216F0D1114124700EA899B /* WebKit.framework */; };
 		23CFB70911177D14001C3FCF /* SpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978161111FEC0008D504F /* SpPlugin.m */; };
 		23CFB70C11177D1E001C3FCF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2321710A1114ACD500EA899B /* QuickLook.framework */; };
-		23E9AF191116E77700F6C194 /* Spanakopita.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23E9AF171116E77700F6C194 /* Spanakopita.xib */; };
+		23E9AF191116E77700F6C194 /* SpanakopitaInsert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23E9AF171116E77700F6C194 /* SpanakopitaInsert.xib */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -67,7 +67,7 @@
 		23CFB6E811177C90001C3FCF /* Spanakopita Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Spanakopita Browser.app"; path = "build/Debug/Spanakopita Browser.app"; sourceTree = "<group>"; };
 		23CFB6EA11177C90001C3FCF /* Spanakopita Browser-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Spanakopita Browser-Info.plist"; sourceTree = "<group>"; };
 		23CFB70011177CD9001C3FCF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		23E9AF171116E77700F6C194 /* Spanakopita.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Spanakopita.xib; sourceTree = "<group>"; };
+		23E9AF171116E77700F6C194 /* SpanakopitaInsert.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpanakopitaInsert.xib; sourceTree = "<group>"; };
 		32DBCF630370AF2F00C91783 /* Spanakopita_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spanakopita_Prefix.pch; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Spanakopita.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Spanakopita.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -129,7 +129,7 @@
 			children = (
 				232170151114164F00EA899B /* SpanakopitaApp.xib */,
 				23CFB68911177554001C3FCF /* SpanakopitaWindow.xib */,
-				23E9AF171116E77700F6C194 /* Spanakopita.xib */,
+				23E9AF171116E77700F6C194 /* SpanakopitaInsert.xib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -281,7 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23CFB6FA11177CC6001C3FCF /* filter.py in Resources */,
-				23CFB6F011177CB0001C3FCF /* Spanakopita.xib in Resources */,
+				23CFB6F011177CB0001C3FCF /* SpanakopitaInsert.xib in Resources */,
 				23CFB6EF11177CAD001C3FCF /* SpanakopitaWindow.xib in Resources */,
 				23CFB6EE11177CAA001C3FCF /* SpanakopitaApp.xib in Resources */,
 			);
@@ -293,7 +293,7 @@
 			files = (
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
 				237B6D771115A70800B4BBE0 /* filter.py in Resources */,
-				23E9AF191116E77700F6C194 /* Spanakopita.xib in Resources */,
+				23E9AF191116E77700F6C194 /* SpanakopitaInsert.xib in Resources */,
 				23CFB68A11177554001C3FCF /* SpanakopitaWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

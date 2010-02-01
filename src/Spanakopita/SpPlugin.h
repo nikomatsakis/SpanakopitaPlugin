@@ -4,12 +4,13 @@
 #import "SpInsertController.h"
 #import "TextMate.h"
 
-@interface SpPlugin : NSObject {
+@interface SpPlugin : NSObject <SpInsertControllerDelegate> {
 	NSMenu* windowMenu;
 	NSMenuItem* showClockMenuItem;
 }
 
 - (void)installMenuItem;
 - (void)uninstallMenuItem;
+- (void)changeToPath:(NSString *)path;
 
 @end

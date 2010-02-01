@@ -65,8 +65,18 @@ int SpPluginKey = 0;
 - (void)showSpanakopita:(id)sender
 {
 	NSWindow *currentProjectWindow = [self currentProjectWindow];
-	if(currentProjectWindow) 
-		[SpInsertController insertIntoProjectWindow:currentProjectWindow];
+	if(currentProjectWindow) {
+		SpInsertController *contr = [SpInsertController wrapTextMateEditorInProjectWindow:currentProjectWindow];
+		contr.delegate = self;
+	}
 }
+
+- (void)changeToPath:(NSString*)path
+{
+	NSString *textMateURL = [NSString stringWithFormat:@"txmt://open?url=file://%@", path];
+	NSURL *url = [NSURL URLWithString:textMateURL];
+	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+	[workspace openURL:url];
+}	
 
 @end

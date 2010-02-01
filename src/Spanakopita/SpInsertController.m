@@ -9,52 +9,42 @@ int SpWindowControllerContext;
 
 @implementation SpInsertController
 
-@synthesize projectWindow, currentFilePath, webView;
+@synthesize projectWindow, currentFilePath, mainView, webView, delegate;
 
-+ insertIntoProjectWindow:(NSWindow*)aWindow
++ (id) wrapTextMateEditorInProjectWindow:(NSWindow *)aWindow
 {
 	id controller = objc_getAssociatedObject(aWindow, &SpWindowControllerContext);
 	if(controller == nil) { // No associated object?
 		SpInsertController *controller = [[[SpInsertController alloc] initWithProjectWindow:aWindow] autorelease];
-		objc_setAssociatedObject(aWindow, &SpWindowControllerContext, controller, OBJC_ASSOCIATION_RETAIN);		
+		objc_setAssociatedObject(aWindow, &SpWindowControllerContext, controller, OBJC_ASSOCIATION_RETAIN);
+		
+		// Have to wrap the text editing area (an NSScrollView) with a Split view:
+		NSArray *subviews = [[aWindow contentView] subviews];
+		for(NSView *subview in subviews) {
+			if([subview isKindOfClass:[NSScrollView class]]) { // Found it
+				[controller wrap:subview];
+				break;
+			}
+		}		
 	}
 	return controller;
 }
-	
+
 - initWithProjectWindow:(NSWindow*)aWindow
 {
 	if((self = [super init])) {
 		self.projectWindow = aWindow;
 		
+		NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"SpanakopitaInsert" bundle:bundle];
+		if(![nib instantiateNibWithOwner:self topLevelObjects:nil])
+			NSLog(@"Failed to init nib");
+		
 		NSLog(@"SpInsertController %p allocated", self);
+		[webView setShouldCloseWithWindow:YES];
+		[webView setFrameLoadDelegate:self];
 		
-		// Have to wrap the text editing area (an NSScrollView) with a Split view:
-		NSView *contentView = [projectWindow contentView];
-		NSArray *subviews = [contentView subviews];
-		for(NSView *subview in subviews) {
-			if([subview isKindOfClass:[NSScrollView class]]) { // Found it
-				// Create splitView that will encompass scroll view:
-				NSSplitView *splitView = [[[NSSplitView alloc] initWithFrame:[subview frame]] autorelease];
-				[splitView setVertical:NO];
-				[splitView setAutoresizingMask:[subview autoresizingMask]];
-				
-				// Create webView:
-				self.webView = [[[WebView alloc] initWithFrame:[subview frame]] autorelease];
-				[webView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
-				[webView setShouldCloseWithWindow:YES];
-				[webView setFrameLoadDelegate:self];
-				
-				// Substitute and connect the various views:
-				[subview retain];
-				[contentView replaceSubview:subview with:splitView];				
-				[splitView addSubview:subview];
-				[splitView addSubview:webView];	
-				break;
-			}
-		}
-		
-		[self reloadCurrentFilePath];
-		
+		[self reloadCurrentFilePath];		
 		[projectWindow addObserver:self forKeyPath:@"representedFilename" options:0 context:&SpWindowControllerContext];
 	}
 	return self;
@@ -67,7 +57,25 @@ int SpWindowControllerContext;
 	[projectWindow removeObserver:self forKeyPath:@"representedFilename"];
 	self.projectWindow = nil;
 	self.webView = nil;
+	self.mainView = nil;
 	[super dealloc];
+}
+
+- (void) wrap:(NSView *)subview 
+{
+	NSView *superview = [subview superview];
+	
+	// Create splitView that will encompass scroll view:
+	NSSplitView *splitView = [[[NSSplitView alloc] initWithFrame:[subview frame]] autorelease];
+	[splitView setVertical:NO];
+	[splitView setAutoresizingMask:[subview autoresizingMask]];
+	
+	// Substitute and connect the various views:
+	[subview retain];
+	[superview replaceSubview:subview with:splitView];				
+	[splitView addSubview:subview];
+	[splitView addSubview:mainView];		
+	[subview release];
 }
 
 - (void)reloadCurrentFilePath
@@ -90,6 +98,11 @@ int SpWindowControllerContext;
 	}
 }
 
+- (void) reload:(id)sender
+{
+	[[webView mainFrame] reloadFromOrigin];
+}
+
 #pragma mark WebFrameLoadDelegate Informal Protocol
 
 - (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame
@@ -99,12 +112,9 @@ int SpWindowControllerContext;
         NSURL *url = [[[frame provisionalDataSource] request] URL];
 		if([[url scheme] isEqual:SP_SCHEME] || [url isFileURL]) {
 			NSString *path = [[url path] stringByStandardizingPath];
-			if(path && ![self.currentFilePath isEqual:path]) {
+			if(path && ![self.currentFilePath isEqual:path]) {				
 				self.currentFilePath = path;
-				NSString *textMateURL = [NSString stringWithFormat:@"txmt://open?url=file://%@", path];
-				NSURL *url = [NSURL URLWithString:textMateURL];
-				NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-				[workspace openURL:url];
+				[delegate changeToPath:path];
 			}
 		}
     }

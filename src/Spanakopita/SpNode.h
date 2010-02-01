@@ -6,6 +6,7 @@
 	NSArray *children;
 }
 - initWithPath:(NSString*)path;
+- (NSString*)path;
 - (NSString*)name;
 - (BOOL)isLeaf;
 - (NSArray*)children;

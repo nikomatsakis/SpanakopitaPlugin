@@ -18,6 +18,11 @@
 	[super dealloc];
 }
 
+- (NSString*)path
+{
+	return path;
+}
+
 - (NSString*)name
 {
 	return [path lastPathComponent];
