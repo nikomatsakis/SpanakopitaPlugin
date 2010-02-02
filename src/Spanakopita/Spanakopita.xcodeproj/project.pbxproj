@@ -14,7 +14,6 @@
 		238978191111FEC0008D504F /* SpPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978161111FEC0008D504F /* SpPlugin.m */; };
 		2389781A1111FEC0008D504F /* SpInsertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 238978181111FEC0008D504F /* SpInsertController.m */; };
 		23CFB67811177449001C3FCF /* SpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB67711177449001C3FCF /* SpAppDelegate.m */; };
-		23CFB68A11177554001C3FCF /* SpanakopitaWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CFB68911177554001C3FCF /* SpanakopitaWindow.xib */; };
 		23CFB698111775A9001C3FCF /* SpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB697111775A9001C3FCF /* SpWindowController.m */; };
 		23CFB69E11177784001C3FCF /* SpNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB69D11177784001C3FCF /* SpNode.m */; };
 		23CFB6EE11177CAA001C3FCF /* SpanakopitaApp.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232170151114164F00EA899B /* SpanakopitaApp.xib */; };
@@ -294,7 +293,6 @@
 				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
 				237B6D771115A70800B4BBE0 /* filter.py in Resources */,
 				23E9AF191116E77700F6C194 /* SpanakopitaInsert.xib in Resources */,
-				23CFB68A11177554001C3FCF /* SpanakopitaWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

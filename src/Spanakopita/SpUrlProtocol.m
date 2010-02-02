@@ -6,6 +6,8 @@
 #import "SpErrors.h"
 #import "SpPlugin.h"
 
+#define DEBUG 0
+
 @interface SpUrlProtocol()
 - (void) loadFile;
 - (BOOL) loadDirectory;
@@ -33,14 +35,16 @@ static NSData* SpImageToPng(CGImageRef image)
 
 + (BOOL) canInitWithRequest:(NSURLRequest *)request
 {
-	NSLog(@"canInitWithRequest: %@", [request URL]);
+	if(DEBUG)
+		NSLog(@"canInitWithRequest: %@", [request URL]);
 	
 	return [[[request URL] scheme] isEqual:SP_SCHEME];
 }
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
 {
-	NSLog(@"canonicalRequestForRequest: %@", [request URL]);
+	if(DEBUG)
+		NSLog(@"canonicalRequestForRequest: %@", [request URL]);
 	
 	// Probably should convert to absolute path.
 	return request;
@@ -270,8 +274,9 @@ static NSData* SpImageToPng(CGImageRef image)
 	else
 		input = [NSFileHandle fileHandleWithNullDevice];
 	
-	NSLog(@"Spanakopita: Processing %@ with command %@ with arguments %@ stdin=%d",
-		  path, cmd, args, asStdin);
+	if(DEBUG)
+		NSLog(@"Spanakopita: Processing %@ with command %@ with arguments %@ stdin=%d",
+			  path, cmd, args, asStdin);
 	
 	return [self runCommand:cmd arguments:args mimeType:mimeType encoding:encoding input:input];
 }

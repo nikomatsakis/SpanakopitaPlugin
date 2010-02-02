@@ -4,6 +4,8 @@
 #import "SpUrlProtocol.h"
 #import <objc/runtime.h>
 
+#define DEBUG 0
+
 int SpPluginKey = 0;
 
 @implementation SpPlugin
@@ -68,14 +70,19 @@ int SpPluginKey = 0;
 	if(currentProjectWindow) {
 		SpInsertController *contr = [SpInsertController wrapTextMateEditorInProjectWindow:currentProjectWindow];
 		contr.delegate = self;
+		if(DEBUG)
+			NSLog(@"Set delegate of %p to self (%p)", contr.delegate, self);
 	}
 }
 
 - (void)changeToPath:(NSString*)path
 {
-	NSString *textMateURL = [NSString stringWithFormat:@"txmt://open?url=file://%@", path];
+	NSURL *fileURL = [NSURL fileURLWithPath:path];
+	NSString *textMateURL = [NSString stringWithFormat:@"txmt://open?url=%@", fileURL];
 	NSURL *url = [NSURL URLWithString:textMateURL];
 	NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+	if(DEBUG)
+		NSLog(@"textMateURL=%@", url);
 	[workspace openURL:url];
 }	
 

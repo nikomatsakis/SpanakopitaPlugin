@@ -5,6 +5,8 @@
 #import "TextMate.h"
 #import <objc/runtime.h>
 
+#define DEBUG 0
+
 int SpWindowControllerContext;
 
 @implementation SpInsertController
@@ -13,9 +15,9 @@ int SpWindowControllerContext;
 
 + (id) wrapTextMateEditorInProjectWindow:(NSWindow *)aWindow
 {
-	id controller = objc_getAssociatedObject(aWindow, &SpWindowControllerContext);
+	SpInsertController *controller = objc_getAssociatedObject(aWindow, &SpWindowControllerContext);
 	if(controller == nil) { // No associated object?
-		SpInsertController *controller = [[[SpInsertController alloc] initWithProjectWindow:aWindow] autorelease];
+		controller = [[[SpInsertController alloc] initWithProjectWindow:aWindow] autorelease];
 		objc_setAssociatedObject(aWindow, &SpWindowControllerContext, controller, OBJC_ASSOCIATION_RETAIN);
 		
 		// Have to wrap the text editing area (an NSScrollView) with a Split view:
@@ -40,7 +42,8 @@ int SpWindowControllerContext;
 		if(![nib instantiateNibWithOwner:self topLevelObjects:nil])
 			NSLog(@"Failed to init nib");
 		
-		NSLog(@"SpInsertController %p allocated", self);
+		if(DEBUG)
+			NSLog(@"SpInsertController %p allocated", self);
 		[webView setShouldCloseWithWindow:YES];
 		[webView setFrameLoadDelegate:self];
 		
@@ -52,13 +55,21 @@ int SpWindowControllerContext;
 
 - (void)dealloc
 {
-	NSLog(@"SpInsertController %p freed", self);
+	if(DEBUG)
+		NSLog(@"SpInsertController %p freed", self);
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[projectWindow removeObserver:self forKeyPath:@"representedFilename"];
 	self.projectWindow = nil;
 	self.webView = nil;
 	self.mainView = nil;
 	[super dealloc];
+}
+
+- (void)setDelegate:(id<SpInsertControllerDelegate>)aDelegate
+{
+	delegate = aDelegate;
+	if(DEBUG)
+		NSLog(@"[%p setDelegate:%@]", self, delegate);
 }
 
 - (void) wrap:(NSView *)subview 
@@ -83,10 +94,11 @@ int SpWindowControllerContext;
 	NSString *path = [[self.projectWindow representedFilename] stringByStandardizingPath];
 	if(![currentFilePath isEqual:path] && [path length] > 0 ) {
 		self.currentFilePath = path;
-		NSURL *url = [[NSURL alloc] initWithScheme:SP_SCHEME /* Using this form handles any %20 escapes */
+		NSURL *url = [[[NSURL alloc] initWithScheme:SP_SCHEME /* Using this form handles any %20 escapes */
 											  host:@""
-											  path:path];
-		NSLog(@"currentFilePath: %@ url: %@", currentFilePath, url);
+											  path:path] autorelease];
+		if(DEBUG)
+			NSLog(@"currentFilePath: %@ url: %@", currentFilePath, url);
 		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 	}
 }
@@ -115,8 +127,10 @@ int SpWindowControllerContext;
         NSURL *url = [[[frame provisionalDataSource] request] URL];
 		if([[url scheme] isEqual:SP_SCHEME] || [url isFileURL]) {
 			NSString *path = [[url path] stringByStandardizingPath];
-			if(path && ![self.currentFilePath isEqual:path]) {				
+			if(path && ![self.currentFilePath isEqual:path]) {								
 				self.currentFilePath = path;
+				if(DEBUG)
+					NSLog(@"Redirectoring to %@ (delegate=%@)", path, delegate);
 				[delegate changeToPath:path];
 			}
 		}
