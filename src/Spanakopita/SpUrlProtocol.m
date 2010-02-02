@@ -33,11 +33,15 @@ static NSData* SpImageToPng(CGImageRef image)
 
 + (BOOL) canInitWithRequest:(NSURLRequest *)request
 {
+	NSLog(@"canInitWithRequest: %@", [request URL]);
+	
 	return [[[request URL] scheme] isEqual:SP_SCHEME];
 }
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
 {
+	NSLog(@"canonicalRequestForRequest: %@", [request URL]);
+	
 	// Probably should convert to absolute path.
 	return request;
 }

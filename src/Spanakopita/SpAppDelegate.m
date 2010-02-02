@@ -2,8 +2,14 @@
 
 #import "SpAppDelegate.h"
 #import "SpWindowController.h"
+#import "SpUrlProtocol.h"
 
 @implementation SpAppDelegate
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+	[NSURLProtocol registerClass:[SpUrlProtocol class]];
+}
 
 - (void) openDocument:(id)sender
 {

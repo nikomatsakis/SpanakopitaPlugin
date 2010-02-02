@@ -81,9 +81,12 @@ int SpWindowControllerContext;
 - (void)reloadCurrentFilePath
 {
 	NSString *path = [[self.projectWindow representedFilename] stringByStandardizingPath];
-	if(![currentFilePath isEqual:path]) {
+	if(![currentFilePath isEqual:path] && [path length] > 0 ) {
 		self.currentFilePath = path;
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", SP_SCHEME, currentFilePath]];
+		NSURL *url = [[NSURL alloc] initWithScheme:SP_SCHEME /* Using this form handles any %20 escapes */
+											  host:@""
+											  path:path];
+		NSLog(@"currentFilePath: %@ url: %@", currentFilePath, url);
 		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 	}
 }

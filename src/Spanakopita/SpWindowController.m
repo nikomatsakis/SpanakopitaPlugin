@@ -46,6 +46,7 @@ int SpWindowControllerContext;
 		NSArray *objects = [fileSystem selectedObjects];
 		if([objects count] >= 1) {
 			SpNode *node = [objects objectAtIndex:0];
+			NSLog(@"Current Node: %@", node.path);
 			[[self window] setRepresentedFilename:node.path];
 		}
 	}
