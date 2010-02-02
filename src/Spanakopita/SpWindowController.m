@@ -43,10 +43,22 @@ int SpWindowControllerContext;
 	[super dealloc];
 }
 
+- (void) saveDocument:(id)sender
+{
+	NSString *contents = [[textView textStorage] mutableString];
+	NSError *error;
+	if(![contents writeToFile:editPath atomically:YES encoding:editEncoding error:&error])
+		[textView presentError:error];
+	else
+		[insertController reload:self];
+}
+
 - (void) saveCurrentFile
 {
 	if(editPath) {
-		
+		NSUndoManager *undoManager = [textView undoManager];
+		if([undoManager canUndo])
+			[self saveDocument:self];
 	}
 }
 
@@ -88,8 +100,15 @@ int SpWindowControllerContext;
 				[textView setEditable:NO];
 				self.editPath = nil;
 			}
-		}
+		}		
+	} else {
+		[[textView textStorage] setAttributedString:[self attributize:@"(No file)"]];
+		[textView setEditable:NO];
+		self.editPath = nil;		
 	}
+	
+	NSUndoManager *undoManager = [textView undoManager];
+	[undoManager removeAllActions];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
