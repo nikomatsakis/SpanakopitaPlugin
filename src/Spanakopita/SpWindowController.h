@@ -10,6 +10,9 @@
 	IBOutlet NSScrollView *textScrollView;
 	IBOutlet NSTextView *textView;
 	IBOutlet NSTreeController *fileSystem;
+	
+	NSString *editPath;
+	NSStringEncoding editEncoding;
 }
 
 - initWithPath:(NSString*)path;
