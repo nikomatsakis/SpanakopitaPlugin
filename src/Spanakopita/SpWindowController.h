@@ -8,6 +8,7 @@
 	SpNode *rootNode;
 	SpInsertController *insertController;
 	IBOutlet NSScrollView *textScrollView;
+	IBOutlet NSTextView *textView;
 	IBOutlet NSTreeController *fileSystem;
 }
 

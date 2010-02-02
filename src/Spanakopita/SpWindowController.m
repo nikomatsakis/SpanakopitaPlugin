@@ -40,6 +40,11 @@ int SpWindowControllerContext;
 	[super dealloc];
 }
 
+- (void) selectFile: (NSString*) path
+{
+	
+}
+
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if (context == &SpWindowControllerContext) {

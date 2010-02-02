@@ -79,6 +79,9 @@ static NSData* SpImageToPng(CGImageRef image)
 	[dictionary setObject:@"PASSTHROUGH"
 				   forKey:DEFAULTS_PREFIX @"DEFAULT"];
 	
+	[dictionary setObject:@"Index.sp"
+				   forKey:DEFAULTS_PREFIX @"INDEX"];
+	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:dictionary];
 }
@@ -146,24 +149,6 @@ static NSData* SpImageToPng(CGImageRef image)
 	}	   
 }
 
-- (NSString*) subst:(NSString*)input
-{
-	NSRange range = [input rangeOfString:@"${FILTERPY}"];
-	if(range.location != NSNotFound) {
-		NSBundle *bundle = [NSBundle bundleForClass:[SpPlugin class]];
-		NSString *filterPy = [bundle pathForResource:@"filter" ofType:@"py"];
-		input = [input stringByReplacingOccurrencesOfString:@"${FILTERPY}" withString:filterPy];
-	}
-	
-	range = [input rangeOfString:@"${PATH}"];
-	if(range.location != NSNotFound) {
-		NSString *path = [[[self request] URL] path];
-		input = [input stringByReplacingOccurrencesOfString:@"${PATH}" withString:path];
-	}
-	
-	return input;
-}
-
 - (BOOL) loadFileAsIs
 {
 	if(stop)
@@ -180,6 +165,45 @@ static NSData* SpImageToPng(CGImageRef image)
 											 expectedContentLength:-1
 												  textEncodingName:@"UTF-8"] autorelease]];
 	return NO;
+}
+
+
+- (BOOL) loadDirectory
+{
+	// Redirect to dir/Index.sp
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	NSString *indexFile = [defaults objectForKey:DEFAULTS_PREFIX @"INDEX"];
+	NSString *path = [[[self request] URL] path];
+	NSString *newPath = [path stringByAppendingPathComponent:indexFile];
+	NSURL *newURL = [[[NSURL alloc] initWithScheme:SP_SCHEME
+											  host:@""
+											  path:newPath] autorelease];
+	NSURLRequest *request = [NSURLRequest requestWithURL:newURL];
+	[[self client] URLProtocol:self
+		wasRedirectedToRequest:request
+			  redirectResponse:[[[NSURLResponse alloc] initWithURL:[[self request] URL]
+														  MIMEType:@"text/plain" 
+											 expectedContentLength:-1
+												  textEncodingName:@"UTF-8"] autorelease]];
+	return NO;
+}
+
+- (NSString*) subst:(NSString*)input
+{
+	NSRange range = [input rangeOfString:@"${FILTERPY}"];
+	if(range.location != NSNotFound) {
+		NSBundle *bundle = [NSBundle bundleForClass:[SpPlugin class]];
+		NSString *filterPy = [bundle pathForResource:@"filter" ofType:@"py"];
+		input = [input stringByReplacingOccurrencesOfString:@"${FILTERPY}" withString:filterPy];
+	}
+	
+	range = [input rangeOfString:@"${PATH}"];
+	if(range.location != NSNotFound) {
+		NSString *path = [[[self request] URL] path];
+		input = [input stringByReplacingOccurrencesOfString:@"${PATH}" withString:path];
+	}
+	
+	return input;
 }
 
 - (BOOL) runCommand:(NSString*)cmd 
@@ -328,11 +352,6 @@ static NSData* SpImageToPng(CGImageRef image)
 				   didLoadData:data];
 	
 	return NO;
-}
-
-- (BOOL) loadDirectory
-{
-	return [self loadFileAsIs]; // XXX
 }
 
 - (void) stopLoading
