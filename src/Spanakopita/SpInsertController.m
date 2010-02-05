@@ -4,10 +4,16 @@
 #import "SpUrlProtocol.h"
 #import "TextMate.h"
 #import <objc/runtime.h>
+#import <CoreServices/CoreServices.h>
 
 #define DEBUG 0
 
 int SpWindowControllerContext;
+
+@interface SpInsertController()
+- (void)deallocateEventStream;
+@end
+
 
 @implementation SpInsertController
 
@@ -57,12 +63,57 @@ int SpWindowControllerContext;
 {
 	if(DEBUG)
 		NSLog(@"SpInsertController %p freed", self);
+	[self deallocateEventStream];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[projectWindow removeObserver:self forKeyPath:@"representedFilename"];
 	self.projectWindow = nil;
 	self.webView = nil;
 	self.mainView = nil;
 	[super dealloc];
+}
+
+static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
+									   void *clientCallBackInfo,
+									   size_t numEvents,
+									   void *eventPaths,
+									   const FSEventStreamEventFlags eventFlags[],
+									   const FSEventStreamEventId eventIds[])
+{
+	SpInsertController *self = (SpInsertController*)clientCallBackInfo;
+	[self reload:self];
+}
+
+- (void)allocateEventStreamForPath:(NSString*)directoryPath
+{
+	[self deallocateEventStream];
+	
+	FSEventStreamContext context = {
+		.version = 0,
+		.info = self,
+		.retain = NULL,
+		.release = NULL,
+		.copyDescription = NULL
+	};
+	
+	eventStream = FSEventStreamCreate(kCFAllocatorDefault, 
+									  SpInsertControllerCallback, 
+									  &context, 
+									  (CFArrayRef)[NSArray arrayWithObject:directoryPath], 
+									  kFSEventStreamEventIdSinceNow, 
+									  0.2, // seconds to wait
+									  0);
+	FSEventStreamScheduleWithRunLoop(eventStream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+	FSEventStreamStart(eventStream);
+}
+
+- (void)deallocateEventStream
+{
+	if(eventStream) {
+		FSEventStreamStop(eventStream);
+		FSEventStreamInvalidate(eventStream);
+		FSEventStreamRelease(eventStream);
+		eventStream = NULL;
+	}
 }
 
 - (void)setDelegate:(id<SpInsertControllerDelegate>)aDelegate
@@ -89,11 +140,17 @@ int SpWindowControllerContext;
 	[subview release];
 }
 
+- (void)changeCurrentFilePath:(NSString*)path
+{
+	self.currentFilePath = path;
+	[self allocateEventStreamForPath:[path stringByDeletingLastPathComponent]];
+}
+
 - (void)reloadCurrentFilePath
 {
 	NSString *path = [[self.projectWindow representedFilename] stringByStandardizingPath];
 	if(![currentFilePath isEqual:path] && [path length] > 0 ) {
-		self.currentFilePath = path;
+		[self changeCurrentFilePath:path];
 		NSURL *url = [[[NSURL alloc] initWithScheme:SP_SCHEME /* Using this form handles any %20 escapes */
 											  host:@""
 											  path:path] autorelease];
@@ -128,7 +185,7 @@ int SpWindowControllerContext;
 		if([[url scheme] isEqual:SP_SCHEME] || [url isFileURL]) {
 			NSString *path = [[url path] stringByStandardizingPath];
 			if(path && ![self.currentFilePath isEqual:path]) {								
-				self.currentFilePath = path;
+				[self changeCurrentFilePath:path];
 				if(DEBUG)
 					NSLog(@"Redirectoring to %@ (delegate=%@)", path, delegate);
 				[delegate changeToPath:path];

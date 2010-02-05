@@ -14,6 +14,7 @@
 	NSView *mainView;
 	WebView *webView;
 	id<SpInsertControllerDelegate> delegate;
+	FSEventStreamRef eventStream;
 }
 @property(assign) NSWindow *projectWindow;
 @property(copy) NSString *currentFilePath;
