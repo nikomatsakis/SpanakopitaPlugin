@@ -302,7 +302,7 @@ WITHIN_REGULAR_EXPRESSIONS = [
 # Checked only at the start of a line:
 START_REGULAR_EXPRESSIONS = [
     ('HEADER', re.compile(r'___+')),
-    ('BULLET', re.compile(r'-')),
+    ('BULLET', re.compile(r'-(?!-)')),
 ]
 
 class Token(object):
