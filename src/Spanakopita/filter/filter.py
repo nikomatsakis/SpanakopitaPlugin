@@ -275,8 +275,12 @@ class Link(ParentAst):
 #   In addition, whenever a newline is followed by a new level of 
 #   indentation, one or mode INDENT or UNDENT tokens are produced.
     
-# Applied within lines:
+# Applied within lines (order is significant):
 WITHIN_REGULAR_EXPRESSIONS = [
+    ('AT', re.compile(r'@')),
+
+    ('EMDASH', re.compile(r'---')),
+
     ('ITAL', re.compile(r'//')),
     ('BOLD', re.compile(r'\*\*')),
     ('UNDER', re.compile(r'__')),
@@ -287,8 +291,6 @@ WITHIN_REGULAR_EXPRESSIONS = [
 
     ('L_CURLY', re.compile(r'{')),
     ('R_CURLY', re.compile(r'}')),
-
-    ('AT', re.compile(r'@')),
 
     ('L_SQUARE_SQUARE', re.compile(r'\[\s*\[')),
     ('R_SQUARE_SQUARE', re.compile(r'\]\s*\]')),
@@ -549,6 +551,9 @@ def add_elem(lexer, a_parent):
         lexer.next()
     elif lexer.is_a('HEADER'):
         a_parent.append_child(header(lexer))
+    elif lexer.is_a('EMDASH'):
+        a_parent.append_text(lexer.pos, unichr(8212))
+        lexer.next()
     elif lexer.token.tag in LIST_TOKENS:
         a_parent.append_child(any_list(lexer))
     elif lexer.is_a('TABLE_ROW'):
