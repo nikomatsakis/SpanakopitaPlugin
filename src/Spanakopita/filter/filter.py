@@ -84,6 +84,8 @@ Links:
 
 import sys, re, urllib
 
+DEBUG = False
+
 # ___ Ast Classes ______________________________________________________
 
 class Ast(object):
@@ -288,6 +290,9 @@ WITHIN_REGULAR_EXPRESSIONS = [
 
     ('AT', re.compile(r'@')),
 
+    ('L_SQUARE_SQUARE', re.compile(r'\[\s*\[')),
+    ('R_SQUARE_SQUARE', re.compile(r'\]\s*\]')),
+    
     ('L_SQUARE', re.compile(r'\[')),
     ('R_SQUARE', re.compile(r'\]'))
 ]
@@ -304,7 +309,7 @@ class Token(object):
         self.u_text = u_text
         
     def __str__(self):
-        return "%s(%s)" % (self.tag, self.u_text)
+        return "%s(%s)" % (self.tag, self.u_text.encode("utf-8"))
         
 class Lexer(object):
     
@@ -315,6 +320,7 @@ class Lexer(object):
         self.indent = 0 # Indent of current line.
         self.indents = [0] # Indents for which we have issued tokens.
         self.token = None
+        self.verbatim_mode = 0
         self.next()
         
     def skip_space(self):
@@ -361,7 +367,7 @@ class Lexer(object):
         
     def next(self):
         self._next()        
-        #sys.stderr.write("%s\n" % (self.token,))
+        if DEBUG: sys.stderr.write("%s\n" % (self.token,))
         return self.token
         
     def push_indentation_level(self, rel_amnt):
@@ -372,6 +378,10 @@ class Lexer(object):
         """
         self.indent += rel_amnt
         self.indents.append(self.indent)
+        
+    def start_verbatim_mode(self):
+        assert not self.verbatim_mode 
+        self.verbatim_mode = 1
         
     def _next(self):
         if self.pos >= len(self.u_text):
@@ -400,6 +410,48 @@ class Lexer(object):
                 self.token = Token('UNDENT', u"")
                 return
                 
+        if self.verbatim_mode:
+            self.verbatim_next()
+        else:
+            self.non_verbatim_next()
+            
+    def verbatim_next(self):
+        u_char = self.u_text[self.pos]
+
+        # Check for escape characters:
+        if u_char == u"\\" and self.pos + 1 < len(self.u_text):
+            self.pos += 1
+            
+            # Escaped braces are just text:
+            u_next_char = self.u_text[self.pos]
+            if u_next_char in [u"{", u"}"]:
+                self.pos += 1
+                self.token = Token('TEXT', u_char)
+                return
+                
+            # But otherwise escaped characters are markup:
+            self.non_verbatim_next()
+            return
+            
+        # Count matching braces:            
+        if u_char == u"{":
+            self.pos += 1
+            self.verbatim_mode += 1
+            self.token = Token('TEXT', u_char)
+            return            
+        if u_char == u"}":
+            self.pos += 1
+            self.verbatim_mode -= 1
+            if self.verbatim_mode:
+                self.token = Token('TEXT', u_char)
+            else:
+                self.token = Token('R_CURLY', u_char)
+            return
+                
+        # Otherwise just return as text:
+        self.next_word()
+
+    def non_verbatim_next(self):
         # Check for escape character:
         if self.u_text[self.pos] == u"\\" and self.pos + 1 < len(self.u_text):
             self.token = Token('TEXT', self.u_text[self.pos + 1])
@@ -419,6 +471,9 @@ class Lexer(object):
                 return 
                 
         # Just accumulate one word of text:
+        self.next_word()
+        
+    def next_word(self):
         p = self.pos + 1
         while p < len(self.u_text) and self.is_word(self.u_text[p]):
             p += 1
@@ -485,60 +540,46 @@ BEAUTIFIER_TOKENS = {
     'STRIKE': (Struckout, 'STRIKE'),
 }
 
+def add_elem(lexer, a_parent):
+    if lexer.is_a('SPACE'):
+        a_parent.append_text(lexer.pos, u' ')
+        lexer.next()
+    elif lexer.is_a('BLANK_LINE'):
+        a_parent.append_child(Para(lexer.pos))
+        lexer.next()
+    elif lexer.is_a('HEADER'):
+        a_parent.append_child(header(lexer))
+    elif lexer.token.tag in LIST_TOKENS:
+        a_parent.append_child(any_list(lexer))
+    elif lexer.is_a('TABLE_ROW'):
+        a_parent.append_child(table(lexer))
+    elif lexer.is_a('L_SQUARE_SQUARE'):
+        a_parent.append_child(link(lexer))
+    elif lexer.is_a('L_SQUARE'):
+        a_parent.append_child(image(lexer))
+    elif lexer.is_a('INDENT'):
+        a_parent.append_child(indented(lexer))
+    elif lexer.is_a('TEXT') or lexer.is_a('SPACE'):
+        a_parent.append_text(lexer.pos, lexer.token.u_text)
+        lexer.next()
+    elif lexer.is_a('L_CURLY'):
+        a_parent.append_child(code(lexer))
+    elif lexer.token.tag in BEAUTIFIER_TOKENS:
+        a_parent.append_child(beautifier(lexer))
+    elif lexer.is_a('INDENT'):
+        a_parent.append_child(indented(lexer))
+    else:
+        return False
+    return True
+
 def elems(lexer, a_parent, stop_on_tags):
     while True:
         if lexer.token.tag in stop_on_tags:
             return a_parent
-            
-        if lexer.is_a('SPACE'):
-            a_parent.append_text(lexer.pos, u' ')
-            lexer.next()
-            continue
-            
-        if lexer.is_a('BLANK_LINE'):
-            a_parent.append_child(Para(lexer.pos))
-            lexer.next()
-            continue
-            
-        if lexer.is_a('HEADER'):
-            a_parent.append_child(header(lexer))
-            continue
-            
-        if lexer.token.tag in LIST_TOKENS:
-            a_parent.append_child(any_list(lexer))
-            continue
-
-        if lexer.is_a('TABLE_ROW'):
-            a_parent.append_child(table(lexer))
-            continue
-            
-        if lexer.is_a('L_SQUARE'):
-            a_parent.append_child(link_or_image(lexer))
-            continue
         
-        if lexer.is_a('INDENT'):
-            a_parent.append_child(indented(lexer))
-            continue
-
-        if lexer.is_a('TEXT') or lexer.is_a('SPACE'):
-            a_parent.append_text(lexer.pos, lexer.token.u_text)
-            lexer.next()
-            continue
+        if not add_elem(lexer, a_parent):
+            return a_parent
             
-        if lexer.is_a('L_CURLY'):
-            a_parent.append_child(code(lexer))
-            continue
-
-        if lexer.token.tag in BEAUTIFIER_TOKENS:
-            a_parent.append_child(beautifier(lexer))
-            continue
-
-        if lexer.is_a('INDENT'):
-            a_parent.append_child(indented(lexer))
-            continue
-
-        return a_parent
-        
 def header(lexer):
     hlen = len(lexer.token.u_text) / 3
     a_hdr = Header(lexer.pos, hlen)
@@ -551,40 +592,51 @@ def header(lexer):
     return a_hdr
             
 def code(lexer):
-    lexer.next()
+    lexer.start_verbatim_mode()    
+    lexer.next() # Consume the '{'
     
-    u_ignored_space = u""
+    # if followed by an indent, begins an indented code block:    
+    # XXX Move this "unindenting white space" logic into lexer
+    #     so that this code is less special.
     if lexer.is_a('SPACE'):
-        u_ignored_space = lexer.token.u_text
-        skip = u"\n" + (u" " * lexer.indent)
+        u_ignored_space = lexer.token.u_text    
         lexer.next()
         if lexer.is_a('INDENT'):
             a_code = Code(lexer.pos)
-            
+            skip = u"\n" + (u" " * lexer.indent)
             indent_counter = 1
-            while indent_counter:
-                lexer.next()
+            lexer.next()
+            while lexer.token.tag not in ['R_CURLY', 'EOF']:
+                #if DEBUG: sys.stderr.write("Indent Counter: %d\n" % indent_counter)
                 if lexer.is_a('INDENT'): 
                     indent_counter += 1
+                    lexer.next()
                 elif lexer.is_a('UNDENT'):                    
                     indent_counter -= 1
+                    if indent_counter < 0: # Cannot unindent without exiting code mode:
+                        raise ParseError(lexer, ['R_CURLY'])
+                    lexer.next()
                 elif lexer.token.tag in ['SPACE', 'BLANK_LINE']:
                     u_text = lexer.token.u_text.replace(skip, u"\n")
+                    #if DEBUG: sys.stderr.write("Space: '%s'\n" % u_text)
                     a_code.append_text(lexer.pos, u_text)
+                    lexer.next()
                 else:
-                    a_code.append_text(lexer.pos, lexer.token.u_text)
+                    if not add_elem(lexer, a_code):
+                        raise ParseError(lexer, [])
             
-            # Append the final whitespace up until the last newline:
-            (u_ws, u_sep, _) = lexer.token.u_text.rpartition(u"\n")
-            a_code.append_text(lexer.pos, u_ws)
-            a_code.append_text(lexer.pos, u_sep)
-            
-            lexer.next()
             lexer.require(['R_CURLY'])
+            if indent_counter: # Indentation must have returned to where we started:
+                raise ParseError(lexer, ['UNDENT'])            
             lexer.next()
             return a_code
-    
+    else:
+        u_ignored_space = u""
+            
+    # otherwise, inline code block:    
     a_code = Monospaced(lexer.pos)
+    if u_ignored_space:
+        a_code.append_text(lexer.pos, u_ignored_space)
     elems(lexer, a_code, ['R_CURLY', 'BLANK_LINE'])
     lexer.require(['R_CURLY'])
     lexer.next()
@@ -696,23 +748,24 @@ def path_to_url(u_path):
         i = 0
     return u_path[:i].encode('ASCII') + urllib.quote(u_path[i:].encode('UTF-8'))
     
-def url(lexer, a_node):
+def url(lexer, a_node, term):
     # Only accept text and whitespace until ']':
     u_path = u""    
     
     skip_space(lexer)
     
+    # XXX Rewrite to use verbatim_mode of lexer?
     VERB_TAGS = ['TEXT', 'SPACE'] + BEAUTIFIER_TOKENS.keys()
     
     while True:
         if lexer.token.tag in VERB_TAGS:
             u_path += lexer.token.u_text
-            lexer.next()
-        elif lexer.is_a('R_SQUARE'):
+            lexer.next()        
+        elif lexer.token.tag == term:
             a_node.url = path_to_url(u_path)
             return
         else:
-            raise ParseError(lexer, ['R_SQUARE'])
+            raise ParseError(lexer, [term])
             
 ext = re.compile(ur"\.[a-zA-Z0-9-]+$")
 def default_text(url):
@@ -726,33 +779,29 @@ def default_text(url):
             
     return u_text
     
-def link_or_image(lexer):
-    # Saw one '['
+def link(lexer):
+    # Saw [[
+    a_link = Link(lexer.pos)
+    lexer.next()
+    elems(lexer, a_link, ['AT'])
+    lexer.require('AT')
+    a_link.rstrip_text()
+    lexer.next()
+    url(lexer, a_link, 'R_SQUARE_SQUARE')
+    lexer.require(['R_SQUARE_SQUARE'])
     lexer.next()
     
-    # Saw another: [[...]] or [[... @ link]]
-    if lexer.is_a('L_SQUARE'):
-        a_link = Link(lexer.pos)
-        lexer.next()
-        elems(lexer, a_link, ['AT'])
-        lexer.require('AT')
-        a_link.rstrip_text()
-        lexer.next()
-        url(lexer, a_link)
-        lexer.require(['R_SQUARE'])
-        lexer.next()
-        lexer.require(['R_SQUARE'])
-        lexer.next()
+    if not a_link.children_a:
+        # Insert default text from URL.
+        a_link.append_text(lexer.pos, default_text(a_link.url))
         
-        if not a_link.children_a:
-            # Insert default text from URL.
-            a_link.append_text(lexer.pos, default_text(a_link.url))
+    return a_link
             
-        return a_link
-        
-    # Saw only one, must be an image:
+def image(lexer):
+    # Saw '[':
     a_img = Image(lexer.pos)
-    url(lexer, a_img)
+    lexer.next()
+    url(lexer, a_img, 'R_SQUARE')
     lexer.require(['R_SQUARE'])
     lexer.next()
     return a_img

@@ -63,7 +63,7 @@
 		23CFB697111775A9001C3FCF /* SpWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpWindowController.m; sourceTree = "<group>"; };
 		23CFB69C11177784001C3FCF /* SpNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpNode.h; sourceTree = "<group>"; };
 		23CFB69D11177784001C3FCF /* SpNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpNode.m; sourceTree = "<group>"; };
-		23CFB6E811177C90001C3FCF /* Spanakopita Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Spanakopita Browser.app"; path = "build/Debug/Spanakopita Browser.app"; sourceTree = "<group>"; };
+		23CFB6E811177C90001C3FCF /* Spanakopita Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spanakopita Browser.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CFB6EA11177C90001C3FCF /* Spanakopita Browser-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Spanakopita Browser-Info.plist"; sourceTree = "<group>"; };
 		23CFB70011177CD9001C3FCF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		23E9AF171116E77700F6C194 /* SpanakopitaInsert.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpanakopitaInsert.xib; sourceTree = "<group>"; };

@@ -23,6 +23,19 @@ provided based on the file name (like here [[@Test2.sp]]) or the absolute URLs
 (like [[ @ http://www.google.com]]). Note that spaces around the \@ sign are not
 significant.
 
+______ Code __________________________________________________________
+
+Code sections are actually a kind of "reverse markup".  When entering
+into an inline code section like {this one, then magic characters 
+like ** or @ are normally ignored}, but you can use backslashes
+{to \**temporarily \//enter\// markup mode\**}.  
+
+You can also make links:
+{
+    class \[[Foo \@ Test2.sp\]] {
+    }
+}
+
 ______ Lists _________________________________________________________
 
 You should be able to create lists:
