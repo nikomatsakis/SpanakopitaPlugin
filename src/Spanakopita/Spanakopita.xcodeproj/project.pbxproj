@@ -349,8 +349,10 @@
 				GCC_PREFIX_HEADER = Spanakopita_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Spanakopita;
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = "ppc i386";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -366,8 +368,10 @@
 				GCC_PREFIX_HEADER = Spanakopita_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Spanakopita;
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = "ppc i386";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
