@@ -7,7 +7,7 @@ int SpWindowControllerContext;
 
 @interface SpWindowController()
 @property(retain) SpNode *rootNode;
-@property(retain) SpInsertController *insertController;
+@property(assign) SpInsertController *insertController; // should stay alive as long as window does
 @property(assign) NSScrollView *textScrollView;
 @property(retain) NSTreeController *fileSystem;
 @property(retain) NSString *editPath;
@@ -22,11 +22,10 @@ int SpWindowControllerContext;
 {
 	if((self = [super initWithWindowNibName:@"SpanakopitaWindow"])) {
 		rootNode = [[SpNode alloc] initWithPath:path];
-		[self loadWindow];
 		
-		insertController = [[SpInsertController alloc] initWithProjectWindow:[self window]];
-		[insertController wrap:textScrollView];
+		self.insertController = [SpInsertController associatedInsertControllerForWindow:[self window] created:NULL];
 		insertController.delegate = self;
+		[insertController wrap:textScrollView];
 		
 		[fileSystem addObserver:self forKeyPath:@"selectionIndexPaths" options:0 context:&SpWindowControllerContext];
 	}
@@ -41,6 +40,11 @@ int SpWindowControllerContext;
 	self.fileSystem = nil;
 	self.editPath = nil;
 	[super dealloc];
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+	[self autorelease];
 }
 
 - (void) saveDocument:(id)sender

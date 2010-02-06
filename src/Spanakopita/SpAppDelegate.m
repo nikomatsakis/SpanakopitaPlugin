@@ -22,10 +22,10 @@
 	if(res == NSFileHandlingPanelOKButton) {
 		NSURL *url = [[panel URLs] objectAtIndex:0];
 		NSString *path = [url path];
-		
+
+		// Memory management: when the window closes, wc will release itself.
 		SpWindowController *wc = [[SpWindowController alloc] initWithPath:path];
 		[wc showWindow:self];
-		// XXX memory management
 	}
 	
 }

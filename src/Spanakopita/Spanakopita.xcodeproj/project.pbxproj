@@ -20,7 +20,6 @@
 		23CFB6EF11177CAD001C3FCF /* SpanakopitaWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23CFB68911177554001C3FCF /* SpanakopitaWindow.xib */; };
 		23CFB6F011177CB0001C3FCF /* SpanakopitaInsert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23E9AF171116E77700F6C194 /* SpanakopitaInsert.xib */; };
 		23CFB6F111177CBD001C3FCF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 23216FE5111415F300EA899B /* main.m */; };
-		23CFB6F311177CBD001C3FCF /* SpTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2321701D111416AF00EA899B /* SpTest.m */; };
 		23CFB6F511177CBD001C3FCF /* SpAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB67711177449001C3FCF /* SpAppDelegate.m */; };
 		23CFB6F711177CBD001C3FCF /* SpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB697111775A9001C3FCF /* SpWindowController.m */; };
 		23CFB6F911177CBD001C3FCF /* SpNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 23CFB69D11177784001C3FCF /* SpNode.m */; };
@@ -47,8 +46,6 @@
 		23216F0D1114124700EA899B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		23216FE5111415F300EA899B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		232170151114164F00EA899B /* SpanakopitaApp.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpanakopitaApp.xib; sourceTree = "<group>"; };
-		2321701C111416AF00EA899B /* SpTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpTest.h; sourceTree = "<group>"; };
-		2321701D111416AF00EA899B /* SpTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpTest.m; sourceTree = "<group>"; };
 		2321710A1114ACD500EA899B /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		237B6D751115A70800B4BBE0 /* filter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = filter.py; sourceTree = "<group>"; };
 		238978151111FEC0008D504F /* SpPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpPlugin.h; sourceTree = "<group>"; };
@@ -180,8 +177,6 @@
 			isa = PBXGroup;
 			children = (
 				23216FE5111415F300EA899B /* main.m */,
-				2321701C111416AF00EA899B /* SpTest.h */,
-				2321701D111416AF00EA899B /* SpTest.m */,
 				23CFB67611177449001C3FCF /* SpAppDelegate.h */,
 				23CFB67711177449001C3FCF /* SpAppDelegate.m */,
 				23CFB696111775A9001C3FCF /* SpWindowController.h */,
@@ -307,7 +302,6 @@
 				23CFB6FC11177CCE001C3FCF /* SpUrlProtocol.m in Sources */,
 				23CFB6FE11177CCE001C3FCF /* SpInsertController.m in Sources */,
 				23CFB6F111177CBD001C3FCF /* main.m in Sources */,
-				23CFB6F311177CBD001C3FCF /* SpTest.m in Sources */,
 				23CFB6F511177CBD001C3FCF /* SpAppDelegate.m in Sources */,
 				23CFB6F711177CBD001C3FCF /* SpWindowController.m in Sources */,
 				23CFB6F911177CBD001C3FCF /* SpNode.m in Sources */,

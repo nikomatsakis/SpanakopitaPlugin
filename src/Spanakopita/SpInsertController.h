@@ -22,7 +22,7 @@
 @property(assign) IBOutlet WebView *webView;
 @property(assign) id<SpInsertControllerDelegate> delegate;
 
-+ wrapTextMateEditorInProjectWindow:(NSWindow*)aWindow;
++ (id) associatedInsertControllerForWindow:(NSWindow *)aWindow created:(BOOL*)created;
 
 - initWithProjectWindow:(NSWindow*)aWindow;
 - (void) wrap:(NSView *)subview;

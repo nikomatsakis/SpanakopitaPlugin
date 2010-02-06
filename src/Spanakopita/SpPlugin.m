@@ -68,10 +68,24 @@ int SpPluginKey = 0;
 {
 	NSWindow *currentProjectWindow = [self currentProjectWindow];
 	if(currentProjectWindow) {
-		SpInsertController *contr = [SpInsertController wrapTextMateEditorInProjectWindow:currentProjectWindow];
-		contr.delegate = self;
-		if(DEBUG)
-			NSLog(@"Set delegate of %p to self (%p)", contr.delegate, self);
+		BOOL created;
+		SpInsertController *contr = [SpInsertController associatedInsertControllerForWindow:currentProjectWindow
+																					created:&created];
+		if(created) {
+			if(DEBUG)
+				NSLog(@"Set delegate of %p to self (%p)", contr.delegate, self);
+			
+			contr.delegate = self;
+			
+			// Have to wrap the text editing area (an NSScrollView) with a Split view:
+			NSArray *subviews = [[currentProjectWindow contentView] subviews];
+			for(NSView *subview in subviews) {
+				if([subview isKindOfClass:[NSScrollView class]]) { // Found it
+					[contr wrap:subview];
+					break;
+				}
+			}		
+		}		
 	}
 }
 

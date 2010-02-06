@@ -19,22 +19,15 @@ int SpWindowControllerContext;
 
 @synthesize projectWindow, currentFilePath, mainView, webView, delegate;
 
-+ (id) wrapTextMateEditorInProjectWindow:(NSWindow *)aWindow
++ (id) associatedInsertControllerForWindow:(NSWindow *)aWindow created:(BOOL*)created
 {
 	SpInsertController *controller = objc_getAssociatedObject(aWindow, &SpWindowControllerContext);
 	if(controller == nil) { // No associated object?
 		controller = [[[SpInsertController alloc] initWithProjectWindow:aWindow] autorelease];
 		objc_setAssociatedObject(aWindow, &SpWindowControllerContext, controller, OBJC_ASSOCIATION_RETAIN);
-		
-		// Have to wrap the text editing area (an NSScrollView) with a Split view:
-		NSArray *subviews = [[aWindow contentView] subviews];
-		for(NSView *subview in subviews) {
-			if([subview isKindOfClass:[NSScrollView class]]) { // Found it
-				[controller wrap:subview];
-				break;
-			}
-		}		
-	}
+		if(created) *created = YES;
+	} else if (created)
+		*created = NO;
 	return controller;
 }
 
