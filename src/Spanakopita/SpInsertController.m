@@ -25,7 +25,7 @@ int SpWindowControllerContext;
 		self.projectWindow = aWindow;
 		
 		NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-		NSNib *nib = [[NSNib alloc] initWithNibNamed:@"SpanakopitaInsert" bundle:bundle];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed:@"SpanakopitaInsert" bundle:bundle] autorelease];
 		if(![nib instantiateNibWithOwner:self topLevelObjects:nil])
 			NSLog(@"Failed to init nib");
 		

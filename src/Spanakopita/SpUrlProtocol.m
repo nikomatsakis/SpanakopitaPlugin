@@ -218,7 +218,7 @@ static NSData* SpImageToPng(CGImageRef image)
 {
 	NSPipe *output = [NSPipe pipe];
 	
-	NSTask *task = [[NSTask alloc] init];
+	NSTask *task = [[[NSTask alloc] init] autorelease];
 	[task setLaunchPath:cmd];
 	[task setArguments:arguments];
 	[task setStandardOutput:output];
