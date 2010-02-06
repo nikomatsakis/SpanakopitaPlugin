@@ -1,3 +1,5 @@
+/** See file LICENSE.txt for licensing information. **/
+
 #import "SpNode.h"
 
 @implementation SpNode

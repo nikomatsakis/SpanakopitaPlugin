@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# See file LICENSE.txt for licensing information. 
 
 """
 Spanakopita markup tool.  The markup is loosely based on a combination of

@@ -1,3 +1,5 @@
+/** See file LICENSE.txt for licensing information. **/
+
 #import <Cocoa/Cocoa.h>
 
 @interface SpNode : NSObject {
