@@ -142,9 +142,11 @@ static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
 	if(wrappedView) {
 		id splitView = [wrappedView superview];
 		id superview = [splitView superview];
+		NSRect frame = [splitView frame];
 		[wrappedView removeFromSuperview];
 		[superview replaceSubview:splitView with:wrappedView];
-		self.wrappedView = nil;
+		[wrappedView setFrame:frame];
+		self.wrappedView = nil;		
 	}
 }
 
