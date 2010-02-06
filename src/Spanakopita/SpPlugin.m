@@ -13,6 +13,12 @@ int SpPluginKey = 0;
 {
 	if(self = [super init]) {
 		[self installMenuItem];
+		insertControllers = [[NSMutableArray alloc] init];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(windowWillClose:) 
+													 name:NSWindowWillCloseNotification 
+												   object:nil];		
 		
 		[NSURLProtocol registerClass:[SpUrlProtocol class]];
 	}
@@ -21,6 +27,7 @@ int SpPluginKey = 0;
 
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self uninstallMenuItem];
 	[super dealloc];
 }
@@ -68,25 +75,49 @@ int SpPluginKey = 0;
 {
 	NSWindow *currentProjectWindow = [self currentProjectWindow];
 	if(currentProjectWindow) {
-		BOOL created;
-		SpInsertController *contr = [SpInsertController associatedInsertControllerForWindow:currentProjectWindow
-																					created:&created];
-		if(created) {
-			if(DEBUG)
-				NSLog(@"Set delegate of %p to self (%p)", contr.delegate, self);
-			
-			contr.delegate = self;
-			
-			// Have to wrap the text editing area (an NSScrollView) with a Split view:
-			NSArray *subviews = [[currentProjectWindow contentView] subviews];
-			for(NSView *subview in subviews) {
-				if([subview isKindOfClass:[NSScrollView class]]) { // Found it
-					[contr wrap:subview];
-					break;
-				}
-			}		
+		
+		for(SpInsertController *contr in insertControllers)
+			if(contr.projectWindow == currentProjectWindow)
+				return; // already exists
+		
+		SpInsertController *contr = [[[SpInsertController alloc] initWithProjectWindow:currentProjectWindow] autorelease];
+		contr.delegate = self;
+		
+		// Have to wrap the text editing area (an NSScrollView) with a Split view:
+		NSArray *subviews = [[currentProjectWindow contentView] subviews];
+		for(NSView *subview in subviews) {
+			if([subview isKindOfClass:[NSScrollView class]]) { // Found it
+				[contr wrap:subview];
+				break;
+			}
 		}		
+		
+		[insertControllers addObject:contr];
 	}
+}
+
+- (void)removeSpanakopita:(SpInsertController*)contr
+{
+	[contr unwrap];
+	[insertControllers removeObject:contr];
+}
+
+- (void) windowWillClose:(NSNotification*)aNotification
+{
+	if(DEBUG) {
+		NSWindow *window = [aNotification object];
+		
+		for(SpInsertController *contr in insertControllers)
+			if(contr.projectWindow == window) {
+				[self removeSpanakopita:contr];
+				return; // already exists
+			}
+	}
+}
+
+- (void)unwrapRequested:(SpInsertController*)contr
+{
+	[self removeSpanakopita:contr];	
 }
 
 - (void)changeToPath:(NSString*)path

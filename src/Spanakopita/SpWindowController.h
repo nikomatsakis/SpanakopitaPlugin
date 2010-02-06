@@ -17,5 +17,6 @@
 
 - initWithPath:(NSString*)path;
 - (void)changeToPath:(NSString *)path;
+- (void)unwrapRequested:(SpInsertController *)contr;
 
 @end

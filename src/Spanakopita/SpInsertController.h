@@ -3,14 +3,17 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
+@class SpInsertController;
+
 @protocol SpInsertControllerDelegate
 - (void) changeToPath:(NSString*)path;
+- (void) unwrapRequested:(SpInsertController*)contr;
 @end
-
 
 @interface SpInsertController : NSObject {
 	NSWindow *projectWindow;
 	NSString *currentFilePath;	
+	NSView *wrappedView;
 	NSView *mainView;
 	WebView *webView;
 	id<SpInsertControllerDelegate> delegate;
@@ -22,12 +25,12 @@
 @property(assign) IBOutlet WebView *webView;
 @property(assign) id<SpInsertControllerDelegate> delegate;
 
-+ (id) associatedInsertControllerForWindow:(NSWindow *)aWindow created:(BOOL*)created;
-
 - initWithProjectWindow:(NSWindow*)aWindow;
 - (void) wrap:(NSView *)subview;
+- (void) unwrap;
 - (void)reloadCurrentFilePath;
 
 - (IBAction)reload:(id)sender;
+- (IBAction)remove:(id)sender;
 
 @end

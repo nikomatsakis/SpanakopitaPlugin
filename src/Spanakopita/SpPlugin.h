@@ -7,10 +7,12 @@
 @interface SpPlugin : NSObject <SpInsertControllerDelegate> {
 	NSMenu* windowMenu;
 	NSMenuItem* showClockMenuItem;
+	NSMutableArray *insertControllers;
 }
 
 - (void)installMenuItem;
 - (void)uninstallMenuItem;
 - (void)changeToPath:(NSString *)path;
+- (void)unwrapRequested:(SpInsertController*)contr;
 
 @end

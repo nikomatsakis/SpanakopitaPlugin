@@ -11,25 +11,13 @@
 int SpWindowControllerContext;
 
 @interface SpInsertController()
+@property(retain) NSView *wrappedView;
 - (void)deallocateEventStream;
 @end
 
-
 @implementation SpInsertController
 
-@synthesize projectWindow, currentFilePath, mainView, webView, delegate;
-
-+ (id) associatedInsertControllerForWindow:(NSWindow *)aWindow created:(BOOL*)created
-{
-	SpInsertController *controller = objc_getAssociatedObject(aWindow, &SpWindowControllerContext);
-	if(controller == nil) { // No associated object?
-		controller = [[[SpInsertController alloc] initWithProjectWindow:aWindow] autorelease];
-		objc_setAssociatedObject(aWindow, &SpWindowControllerContext, controller, OBJC_ASSOCIATION_RETAIN);
-		if(created) *created = YES;
-	} else if (created)
-		*created = NO;
-	return controller;
-}
+@synthesize projectWindow, currentFilePath, mainView, webView, delegate, wrappedView;
 
 - initWithProjectWindow:(NSWindow*)aWindow
 {
@@ -48,21 +36,35 @@ int SpWindowControllerContext;
 		
 		[self reloadCurrentFilePath];		
 		[projectWindow addObserver:self forKeyPath:@"representedFilename" options:0 context:&SpWindowControllerContext];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(windowWillClose:) 
+													 name:NSWindowWillCloseNotification 
+												   object:projectWindow];
 	}
 	return self;
 }
 
 - (void)dealloc
 {
+	NSAssert(wrappedView == nil, @"Still wrapped when dealloc'd");
+	
 	if(DEBUG)
 		NSLog(@"SpInsertController %p freed", self);
 	[self deallocateEventStream];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[projectWindow removeObserver:self forKeyPath:@"representedFilename"];
 	self.projectWindow = nil;
+	[webView setFrameLoadDelegate:nil];
 	self.webView = nil;
 	self.mainView = nil;
 	[super dealloc];
+}
+
+- (void) windowWillClose:(NSNotification*)aNotification
+{
+	if(DEBUG)
+		NSLog(@"InsertController: windowWillClose rc=%d (window rc=%d)", 
+			  [self retainCount], [projectWindow retainCount]);
 }
 
 static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
@@ -120,6 +122,8 @@ static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
 {
 	NSView *superview = [subview superview];
 	
+	self.wrappedView = subview;
+	
 	// Create splitView that will encompass scroll view:
 	NSSplitView *splitView = [[[NSSplitView alloc] initWithFrame:[subview frame]] autorelease];
 	[splitView setVertical:NO];
@@ -131,6 +135,17 @@ static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
 	[splitView addSubview:subview];
 	[splitView addSubview:mainView];		
 	[subview release];
+}
+
+- (void) unwrap
+{
+	if(wrappedView) {
+		id splitView = [wrappedView superview];
+		id superview = [splitView superview];
+		[wrappedView removeFromSuperview];
+		[superview replaceSubview:splitView with:wrappedView];
+		self.wrappedView = nil;
+	}
 }
 
 - (void)changeCurrentFilePath:(NSString*)path
@@ -166,6 +181,11 @@ static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
 - (void) reload:(id)sender
 {
 	[[webView mainFrame] reloadFromOrigin];
+}
+
+- (void) remove:(id)sender
+{
+	[delegate unwrapRequested:self];
 }
 
 #pragma mark WebFrameLoadDelegate Informal Protocol

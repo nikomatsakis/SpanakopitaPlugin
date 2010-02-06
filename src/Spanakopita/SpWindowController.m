@@ -7,7 +7,7 @@ int SpWindowControllerContext;
 
 @interface SpWindowController()
 @property(retain) SpNode *rootNode;
-@property(assign) SpInsertController *insertController; // should stay alive as long as window does
+@property(retain) SpInsertController *insertController;
 @property(assign) NSScrollView *textScrollView;
 @property(retain) NSTreeController *fileSystem;
 @property(retain) NSString *editPath;
@@ -23,7 +23,7 @@ int SpWindowControllerContext;
 	if((self = [super initWithWindowNibName:@"SpanakopitaWindow"])) {
 		rootNode = [[SpNode alloc] initWithPath:path];
 		
-		self.insertController = [SpInsertController associatedInsertControllerForWindow:[self window] created:NULL];
+		self.insertController = [[[SpInsertController alloc] initWithProjectWindow:[self window]] autorelease];
 		insertController.delegate = self;
 		[insertController wrap:textScrollView];
 		
@@ -44,6 +44,7 @@ int SpWindowControllerContext;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[insertController unwrap];
 	[self autorelease];
 }
 
@@ -132,6 +133,13 @@ int SpWindowControllerContext;
 - (void)changeToPath:(NSString*)path
 {
 	[self selectFile:path];
+}
+
+- (void)unwrapRequested:(SpInsertController *)contr
+{
+	NSAssert(contr == insertController, @"unwrapRequested from unknown insertController");
+	[insertController unwrap];
+	self.insertController = nil;
 }
 
 @end
