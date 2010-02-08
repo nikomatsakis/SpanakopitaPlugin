@@ -425,11 +425,11 @@ class Lexer(object):
         if u_char == u"\\" and self.pos + 1 < len(self.u_text):
             self.pos += 1
             
-            # Escaped braces are just text:
+            # Escaped braces and backslashes are just text:
             u_next_char = self.u_text[self.pos]
-            if u_next_char in [u"{", u"}"]:
+            if u_next_char in [u"{", u"}", u"\\"]:
                 self.pos += 1
-                self.token = Token('TEXT', u_char)
+                self.token = Token('TEXT', u_next_char)
                 return
                 
             # But otherwise escaped characters are markup:
