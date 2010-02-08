@@ -351,7 +351,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Spanakopita;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.5;
 				VALID_ARCHS = "ppc i386";
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -370,7 +370,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Spanakopita;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.5;
 				VALID_ARCHS = "ppc i386";
 				WRAPPER_EXTENSION = bundle;
 			};

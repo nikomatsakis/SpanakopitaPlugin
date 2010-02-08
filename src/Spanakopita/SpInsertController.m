@@ -182,7 +182,7 @@ static void SpInsertControllerCallback(ConstFSEventStreamRef streamRef,
 
 - (void) reload:(id)sender
 {
-	[[webView mainFrame] reloadFromOrigin];
+	[[webView mainFrame] reload];
 }
 
 - (void) remove:(id)sender

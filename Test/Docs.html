@@ -1,0 +1,283 @@
+<html>
+<body>
+<h1>Documentation For Spanakopita Markup</h1><p>Spanakopita markup is designed, more or less, after the informal rules that I generally use when writing text files, though influenced by the <a href="http://txt2tags.sourceforge.net/">txt2tags system</a>.<p><h2>Headings</h2><p>Headings are produced by placing three or more underscores at the start of a line. Any trailing underscores are then ignored.<p><b>Example:</b> <table border="1">
+<tr>
+<td>
+<pre>
+&#x005f;&#x005f;&#x005f; Heading Level 1 &#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;        &#x000a;    </pre>
+ </td>
+<td>
+<h1>Heading Level 1</h1> </td>
+</tr>
+<tr>
+<td>
+<pre>
+&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f; Heading Level 2 &#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x000a;    </pre>
+ </td>
+<td>
+<h2>Heading Level 2</h2> </td>
+</tr>
+<tr>
+<td>
+<pre>
+&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f;&#x005f; Heading Level 3 &#x005f;&#x005f;&#x005f;&#x000a;    </pre>
+ </td>
+<td>
+<h3>Heading Level 3</h3> </td>
+</tr>
+</table>
+<p><h2>Indentation: Block Quoting, etc.</h2><p>First of all, indentation is significant. I suggest that you edit <tt>.sp</tt> files using TextMate&#x0027;s <tt>Soft Tabs</tt> feature and avoid including tabs in your files (the menu option <tt>Text &#x003e; Convert &#x003e; Tabs to Spaces</tt> may be helpful here). Generally speaking indentation can be used to create block quotes but it is also used to nest tables within tables.<p><b>Examples:</b> <table border="1">
+<tr>
+<td>
+<pre>
+Some text.&#x000a;    Some indented text.&#x000a;        Even more indented text.&#x000a;    Unindented text.&#x000a;Some unindented text.&#x000a;&#x000a;A new paragraph.  Note the blank line.&#x000a;    </pre>
+ </td>
+<td>
+Some text. <blockquote>
+Some indented text. <blockquote>
+Even more indented text. </blockquote>
+Unindented text. </blockquote>
+Some unindented text.<p>A new paragraph. Note the blank line. </td>
+</tr>
+</table>
+<p><h2>Beautifiers</h2><p>A paragraph is just a bunch of text followed by a blank line. Within a paragraph, there are several beautifiers that can be used: <table border="1">
+<tr>
+<td>
+<tt>**Bold**</tt> </td>
+<td>
+<b>Bold</b> </td>
+</tr>
+<tr>
+<td>
+<tt>//Italics//</tt> </td>
+<td>
+<i>Italics</i> </td>
+</tr>
+<tr>
+<td>
+<tt>&#x005f;&#x005f;Underline&#x005f;&#x005f;</tt> </td>
+<td>
+<u>Underline</u> </td>
+</tr>
+<tr>
+<td>
+<tt>--Strikeout--</tt> </td>
+<td>
+<strike>Strikeout</strike> </td>
+</tr>
+<tr>
+<td>
+<tt>{Verbatim}</tt> </td>
+<td>
+<tt>Verbatim</tt> </td>
+</tr>
+</table>
+Note the last one. To produce an em dash, use three dashes like this: <tt>---</tt>, which will produce the symbol &#x0022;&#x2014;&#x0022;.<p>Verbatim text is somewhat special. First, it disables markup by default (though it can be re-enabled, see the section on Escaping). Second, if you follow a curly brace ({) with a newline and an indent, it becomes a code block, as shown here: <table border="1">
+<tr>
+<td>
+<pre>
+{&#x000a;    int main() {&#x000a;        return 0;&#x000a;    }&#x000a;}&#x000a;    </pre>
+ </td>
+<td>
+<pre>
+int main() {&#x000a;    return 0;&#x000a;}&#x000a;    </pre>
+ </td>
+</tr>
+</table>
+Note that curly braces in any verbatim section <i>must</i> be balanced unless preceded by a backslash: <table border="1">
+<tr>
+<td>
+<tt>{Unbalanced curly: &#x005c;{}</tt> </td>
+<td>
+<tt>Unbalanced curly: {</tt> </td>
+</tr>
+</table>
+<p><h2>Lists</h2><p>Lists are pretty easy. Just start a link with a single dash <tt>-</tt>. If the text for a list item is longer than one line, then subsequent lines should be indented by two spaces to line up (note that TextMate&#x0027;s <tt>Reformat Paragraph</tt> (<tt>&#x005e;Q</tt>) command does this by default).<p><b>Example:</b> <table border="1">
+<tr>
+<td>
+<pre>
+- A list item.&#x000a;- Another list item.&#x000a;    - An indented list.&#x000a;        - A doubly indented list.&#x000a;          This list item spans two lines.&#x000a;    - To unindent, just, well, do it.&#x000a;    &#x000a;      Also, list items can have multiple paragraphs.&#x000a;      Note that the start of this parapgraph was &#x000a;      indented to line up with the other members of&#x000a;      the list item. &#x000a;This text is not part of the list.&#x000a;    </pre>
+ </td>
+<td>
+<ol>
+
+<li>  A list item. 
+<li>  Another list item. <ol>
+
+<li>  An indented list. <ol>
+
+<li>  A doubly indented list. This list item spans two lines. </ol>
+
+<li>  To unindent, just, well, do it.<p>Also, list items can have multiple paragraphs. Note that the start of this parapgraph was indented to line up with the other members of the list item. </ol>
+</ol>
+This text is not part of the list. </td>
+</tr>
+</table>
+<p><h2>Images</h2><p>Embedding images is done by enclosing the URL in square braces (<tt>[</tt> and <tt>]</tt>).<p><b>Examples:</b> <table border="1">
+<tr>
+<td>
+<tt>[spanakopita.jpg]</tt> </td>
+<td>
+<img src="spanakopita.jpg"> </td>
+</tr>
+</table>
+<p><h2>Links</h2><p>Links are similar to images but they use double braces (<tt>[[</tt> and <tt>]]</tt>). The (optional) link text is separated from the URL by an <tt>&#x0040;</tt> sign. If the link text is omitted, then it is generated from the URL by dropping any extension.<p><b>Examples:</b> <table border="1">
+<tr>
+<td>
+<tt>[[a link to this document &#x0040; Docs.sp]]</tt> </td>
+<td>
+<a href="Docs.sp">a link to this document</a> </td>
+</tr>
+<tr>
+<td>
+<tt>[[&#x0040;Docs.sp]]</tt> </td>
+<td>
+<a href="Docs.sp">Docs</a> </td>
+</tr>
+<tr>
+<td>
+<tt>[[Absolute URLs are OK too &#x0040; http://www.google.com]]</tt> </td>
+<td>
+<a href="http://www.google.com">Absolute URLs are OK too</a> </td>
+</tr>
+<tr>
+<td>
+<tt>[[&#x0040;http://www.google.com]]</tt> </td>
+<td>
+<a href="http://www.google.com">http://www.google.com</a> </td>
+</tr>
+</table>
+<p><h2>Tables</h2><p>Table rows are enclosed in double pipe symbols <tt>&#x007c;&#x007c;</tt>. Cells are separated using a single <tt>&#x007c;</tt>. Subsequent rows are joined into a single table. A cell can contain either one line of text or an indented section. The latter can be used to create nested tables:<p><b>Examples:</b> <table border="1">
+<tr>
+<td>
+<pre>
+&#x007c;&#x007c; a &#x007c; b &#x007c; c &#x007c;&#x007c;&#x000a;&#x007c;&#x007c; d &#x007c; e &#x007c; f &#x007c;&#x007c;&#x000a;    </pre>
+ </td>
+<td>
+<table border="1">
+<tr>
+<td>
+a </td>
+<td>
+b </td>
+<td>
+c </td>
+</tr>
+<tr>
+<td>
+d </td>
+<td>
+e </td>
+<td>
+f </td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+&#x007c;&#x007c; a&#x000a;&#x007c;  b&#x000a;&#x007c;  c&#x000a;&#x007c;&#x007c; &#x000a;&#x007c;&#x007c; d&#x000a;&#x007c;  e&#x000a;&#x007c;  f&#x000a;&#x007c;&#x007c;        &#x000a;    </pre>
+ </td>
+<td>
+<table border="1">
+<tr>
+<td>
+a </td>
+<td>
+b </td>
+<td>
+c </td>
+</tr>
+<tr>
+<td>
+d </td>
+<td>
+e </td>
+<td>
+f </td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<pre>
+&#x007c;&#x007c; &#x000a;    &#x007c;&#x007c; a0 &#x007c; a1 &#x007c;&#x007c;&#x000a;    &#x007c;&#x007c; b0 &#x007c; b1 &#x007c;&#x007c;&#x000a;&#x007c;  b&#x000a;&#x007c;  c&#x000a;&#x007c;&#x007c; &#x000a;&#x007c;&#x007c; d&#x000a;&#x007c;  e&#x000a;&#x007c;  f&#x000a;&#x007c;&#x007c;        &#x000a;    </pre>
+ </td>
+<td>
+<table border="1">
+<tr>
+<td>
+<table border="1">
+<tr>
+<td>
+a0 </td>
+<td>
+a1 </td>
+</tr>
+<tr>
+<td>
+b0 </td>
+<td>
+b1 </td>
+</tr>
+</table>
+</td>
+<td>
+b </td>
+<td>
+c </td>
+</tr>
+<tr>
+<td>
+d </td>
+<td>
+e </td>
+<td>
+f </td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p><h2>Escaping</h2><p>In general any character can be escaped by preceding it with a backslash (&#x005c;). This disables any markup associated with that character. To insert a literal backslash, simply use two in a row (&#x005c;&#x005c;).<p>However, in a verbatim section, the escaping rules are reversed. Markup is <i>disabled</i> by default and only <i>enabled</i> by a backslash. This allows you to embed images and links or highlight content. The only exception are the characters {, }, and the backslash &#x005c; itself, which are still significant in verbatim text.<p><b>Examples:</b> <table border="1">
+<tr>
+<td>
+<tt>**Bold text.**</tt> </td>
+<td>
+<b>Bold text.</b> </td>
+</tr>
+<tr>
+<td>
+<tt>&#x005c;**Not bold text.&#x005c;**</tt> </td>
+<td>
+**Not bold text.** </td>
+</tr>
+<tr>
+<td>
+<tt>{Verbatim section so **bold text** is not enabled.}</tt> </td>
+<td>
+<tt>Verbatim section so **bold text** is not enabled.</tt> </td>
+</tr>
+<tr>
+<td>
+<tt>{But it can be explicitly &#x005c;**enabled&#x005c;**.}</tt> </td>
+<td>
+<tt>But it can be explicitly <b>enabled</b>.</tt> </td>
+</tr>
+<tr>
+<td>
+<tt>{Escaped braces &#x005c;{, &#x005c;}, and double escapes &#x005c;&#x005c; in a verbatim section.}</tt> </td>
+<td>
+<tt>Escaped braces {, }, and double escapes &#x005c; in a verbatim section.</tt> </td>
+</tr>
+<tr>
+<td>
+<tt>{&#x005c;[[String &#x005c;&#x0040; http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html&#x005c;]]}</tt> </td>
+<td>
+<tt><a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html">String</a></tt> </td>
+</tr>
+</table>
+</body>
+</html>
